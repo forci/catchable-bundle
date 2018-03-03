@@ -1,0 +1,30 @@
+forci_catchable_root:
+    path: /
+    defaults:
+        _controller: FrameworkBundle:Redirect:redirect
+        route: forci_catchable_index
+
+forci_catchable_index:
+    path:      /index
+    defaults: { _controller: ForciCatchableBundle:Index:index }
+    methods:    [GET]
+
+forci_catchable_catchable_list:
+    path:      /list
+    defaults: { _controller: ForciCatchableBundle:Catchable:list }
+    methods:    [GET]
+
+forci_catchable_catchable_get:
+    path:      /{id}
+    defaults: { _controller: ForciCatchableBundle:Catchable:get }
+    methods:    [GET]
+
+forci_catchable_catchable_delete_all:
+    path:      /all
+    defaults: { _controller: ForciCatchableBundle:Catchable:deleteAll }
+    methods:    [DELETE]
+
+forci_catchable_catchable_delete:
+    path:      /{id}
+    defaults: { _controller: ForciCatchableBundle:Catchable:delete }
+    methods:    [DELETE]

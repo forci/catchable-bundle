@@ -1,0 +1,21 @@
+{
+  "fonts/element-icons.ttf": "bundles/forcicatchable/build/fonts/element-icons.ttf",
+  "fonts/element-icons.woff": "bundles/forcicatchable/build/fonts/element-icons.woff",
+  "fonts/fa-brands-400.eot": "bundles/forcicatchable/build/fonts/fa-brands-400.eot",
+  "fonts/fa-brands-400.svg": "bundles/forcicatchable/build/fonts/fa-brands-400.svg",
+  "fonts/fa-brands-400.ttf": "bundles/forcicatchable/build/fonts/fa-brands-400.ttf",
+  "fonts/fa-brands-400.woff": "bundles/forcicatchable/build/fonts/fa-brands-400.woff",
+  "fonts/fa-brands-400.woff2": "bundles/forcicatchable/build/fonts/fa-brands-400.woff2",
+  "fonts/fa-regular-400.eot": "bundles/forcicatchable/build/fonts/fa-regular-400.eot",
+  "fonts/fa-regular-400.svg": "bundles/forcicatchable/build/fonts/fa-regular-400.svg",
+  "fonts/fa-regular-400.ttf": "bundles/forcicatchable/build/fonts/fa-regular-400.ttf",
+  "fonts/fa-regular-400.woff": "bundles/forcicatchable/build/fonts/fa-regular-400.woff",
+  "fonts/fa-regular-400.woff2": "bundles/forcicatchable/build/fonts/fa-regular-400.woff2",
+  "fonts/fa-solid-900.eot": "bundles/forcicatchable/build/fonts/fa-solid-900.eot",
+  "fonts/fa-solid-900.svg": "bundles/forcicatchable/build/fonts/fa-solid-900.svg",
+  "fonts/fa-solid-900.ttf": "bundles/forcicatchable/build/fonts/fa-solid-900.ttf",
+  "fonts/fa-solid-900.woff": "bundles/forcicatchable/build/fonts/fa-solid-900.woff",
+  "fonts/fa-solid-900.woff2": "bundles/forcicatchable/build/fonts/fa-solid-900.woff2",
+  "main.css": "bundles/forcicatchable/build/app.css",
+  "main.js": "bundles/forcicatchable/build/app.js"
+}

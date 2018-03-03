@@ -1,0 +1,25 @@
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+
+        <service id="forci.catchable.handler.limitless_buffer" class="Forci\Bundle\Catchable\Handler\LimitlessBufferHandler"/>
+
+        <service id="forci.catchable.subscriber.exception" class="Forci\Bundle\Catchable\Subscriber\ExceptionSubscriber">
+            <argument type="service" id="forci.catchable.handler.limitless_buffer"/>
+            <argument type="service" id="forci.catchable.repo.catchable"/>
+            <tag name="kernel.event_subscriber"/>
+        </service>
+
+        <service id="forci.catchable.repo.abstract" abstract="true">
+            <factory service="forci.catchable.entity_manager" method="getRepository"/>
+        </service>
+
+        <service id="forci.catchable.repo.catchable" class="Forci\Bundle\Catchable\Repository\CatchableRepository" parent="forci.catchable.repo.abstract">
+            <argument>Forci\Bundle\Catchable\Entity\Catchable</argument>
+        </service>
+
+    </services>
+
+</container>

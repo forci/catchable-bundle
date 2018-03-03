@@ -1,0 +1,8 @@
+.new-line {
+    white-space: pre-wrap;
+}
+
+.breadcrumb {
+    background-color: transparent;
+    margin: 7px 10px;
+}

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title>Catchable</title>
+        <link rel="stylesheet" href="{{ preload(asset('bundles/forcicatchable/build/app.css'), { as: 'style' }) }}"/>
+        <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('bundles/forcicatchable/favicon-32x32.png') }}">
+    </head>
+    <body>
+
+        <script>
+            var config = {
+                urls:
+                    {
+                        list: '{{ path('forci_catchable_catchable_list') }}',
+                        get: '{{ path('forci_catchable_catchable_get', {'id': '-id-'}) }}',
+                        delete: '{{ path('forci_catchable_catchable_delete', {'id': '-id-'}) }}',
+                        deleteAll: '{{ path('forci_catchable_catchable_delete_all') }}'
+                    }
+            };
+        </script>
+
+        <div id="app">
+            <layout/>
+        </div>
+
+        <script src="{{ preload(asset('bundles/forcicatchable/build/app.js'), {as: 'script'}) }}"></script>
+
+    </body>
+</html>
