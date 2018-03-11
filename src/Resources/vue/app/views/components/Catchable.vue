@@ -23,8 +23,7 @@
             </em>
         </h6>
 
-        <div @click="toggleStringTrace" v-if="!stringTraceVisible">
-
+        <div @dblclick="toggleStringTrace" v-if="!stringTraceVisible">
             <p v-for="(line, key) in catchable.trace"
                style="font-size: 13px; margin: 0 0 5px 0;">
                         <span class="text-secondary">
@@ -37,11 +36,9 @@
             </p>
         </div>
 
-        <transition name="slide-fade">
-            <div @click="toggleStringTrace">
-                <p class="card-text new-line" v-if="stringTraceVisible">{{ catchable.stackTraceString }}</p>
-            </div>
-        </transition>
+        <div @dblclick="toggleStringTrace">
+            <p class="card-text new-line" v-if="stringTraceVisible">{{ catchable.stackTraceString }}</p>
+        </div>
 
         <div style="margin-left: 60px;" v-if="catchable.previous">
             <catchable :ref="'catchable-row-' + catchable.previous.id"
