@@ -37,6 +37,22 @@ class CatchableRepository extends EntityRepository {
         return $query->getOneOrNullResult();
     }
 
+    /**
+     * @param string $class
+     *
+     * @return Catchable[]
+     */
+    public function findByClass(string $class) {
+        $builder = $this->createQueryBuilder('c')
+            ->addSelect('c')
+            ->andWhere('c.class = :class')
+            ->setParameter('class', $class);
+
+        $query = $builder->getQuery();
+
+        return $query->getResult();
+    }
+
     public function filter(CatchableFilter $filter): array {
         $subBuilder = $this->createQueryBuilder('sc');
         $builder = $this->createQueryBuilder('c');
@@ -130,24 +146,27 @@ class CatchableRepository extends EntityRepository {
      * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function removeById(int $id) {
-        $em = $this->getEntityManager();
         $catchable = $this->findOneById($id);
 
-        $delete = [];
-        do {
-            $delete[] = $catchable;
+        if ($catchable) {
+            $em = $this->getEntityManager();
+            $em->remove($catchable);
+            $em->flush();
+        }
+    }
 
-            $previous = $catchable->getPrevious();
+    /**
+     * @param int $id
+     *
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
+    public function removeByClass(string $class) {
+        $em = $this->getEntityManager();
+        $exceptions = $this->findByClass($class);
 
-            if ($previous) {
-                $catchable->setPrevious(null);
-                $this->save($catchable);
-            }
-
-            $catchable = $previous;
-        } while ($catchable);
-
-        foreach ($delete as $catchable) {
+        foreach ($exceptions as $catchable) {
             $em->remove($catchable);
         }
 

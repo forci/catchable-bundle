@@ -15,7 +15,7 @@ forci_catchable_catchable_list:
     methods:    [GET]
 
 forci_catchable_catchable_get:
-    path:      /{id}
+    path:      /{id}/get
     defaults: { _controller: ForciCatchableBundle:Catchable:get }
     methods:    [GET]
 
@@ -25,6 +25,6 @@ forci_catchable_catchable_delete_all:
     methods:    [DELETE]
 
 forci_catchable_catchable_delete:
-    path:      /{id}
+    path:      /remove
     defaults: { _controller: ForciCatchableBundle:Catchable:delete }
     methods:    [DELETE]

@@ -14,9 +14,22 @@
             <h6 class="card-subtitle mb-2 text-muted">{{ catchable.createdAt | formatDate }}</h6>
             <!--<p class="card-text new-line">{{ catchable.message }}</p>-->
             <p class="card-text new-line">In {{ catchable.file }} (line {{ catchable.line }})</p>
-            <a href="javascript:" class="btn btn-danger btn-sm float-right" @click="deleteRecord()">
-                Delete
-            </a>
+            <div class="btn-group float-right">
+                <a href="javascript:" ref="deleteExceptionButton" class="btn btn-danger btn-sm" @click="deleteRecord()">
+                    <i class="fa fa-trash-alt"></i>
+                    Exception
+                </a>
+                <a href="javascript:" ref="deleteClassButton" class="btn btn-danger btn-sm" @click="deleteClass()">
+                    <i class="fa fa-trash-alt"></i>
+                    Class
+                </a>
+            </div>
+            <bootstrap-tooltip :target="() => $refs.deleteExceptionButton">
+                Delete this Exception
+            </bootstrap-tooltip>
+            <bootstrap-tooltip :target="() => $refs.deleteClassButton">
+                Delete all exceptions of this class
+            </bootstrap-tooltip>
         </div>
     </div>
 
@@ -24,14 +37,33 @@
 
 <script>
 
+    import BootstrapTooltip from 'bootstrap-vue/es/components/tooltip/tooltip'
+
     export default {
         props: ['catchable'],
+        components: {
+            BootstrapTooltip
+        },
         methods: {
             deleteRecord() {
                 this.$store.dispatch('deleteCatchable', {
                     id: this.catchable.id
                 }).then((_) => {
-                    //
+                    this.$emit('catchableRemovedById', {id: this.catchable.id});
+                }).catch(error => {
+                    this.$notify({
+                        group: 'main',
+                        classes: 'vue-notification error',
+                        title: 'Error',
+                        text: error
+                    });
+                });
+            },
+            deleteClass() {
+                this.$store.dispatch('deleteCatchable', {
+                    class: this.catchable.class
+                }).then((_) => {
+                    this.$emit('catchableRemovedByClass', {class: this.catchable.class});
                 }).catch(error => {
                     this.$notify({
                         group: 'main',

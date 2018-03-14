@@ -102,6 +102,38 @@ const actions = {
                 });
         });
     },
+    getCatchables({commit}, data) {
+        return new Promise((resolve, reject) => {
+
+            commit(types.CATCHABLE_SET_LIST_IN_PROGRESS, {
+                value: true
+            });
+
+            let params = Object.assign({
+                page: 1,
+                limit: state.recordsPerPage
+            }, data);
+
+            axios.get(config.urls.list, {params: params})
+                .then(response => {
+                    if (!response.data.success) {
+                        reject(response.data.message);
+                    }
+
+                    commit(types.CATCHABLE_LIST, response.data);
+                    commit(types.CATCHABLE_SET_LIST_IN_PROGRESS, {
+                        value: false
+                    });
+                    resolve(response.data);
+                })
+                .catch(function (error) {
+                    commit(types.CATCHABLE_SET_LIST_IN_PROGRESS, {
+                        value: false
+                    });
+                    reject(error);
+                });
+        });
+    },
     getCatchable({commit}, data) {
         return new Promise((resolve, reject) => {
 
@@ -146,9 +178,32 @@ const actions = {
     deleteCatchable({commit}, data) {
         return new Promise((resolve, reject) => {
 
-            let url = config.urls.delete.replace('-id-', data.id);
+            axios.delete(config.urls.delete, {
+                params: data
+            })
+                .then(response => {
+                    if (!response.data.success) {
+                        reject(response.data.message);
+                    }
 
-            axios.delete(url)
+                    if (data.id) {
+                        commit(types.CATCHABLE_DELETE, {
+                            id: data.id
+                        });
+                    }
+
+                    resolve();
+                })
+                .catch(function (error) {
+                    reject(error);
+                });
+
+        });
+    },
+    deleteCatchableByClass({commit}, data) {
+        return new Promise((resolve, reject) => {
+
+            axios.delete(config.urls.delete, data)
                 .then(response => {
                     if (!response.data.success) {
                         reject(response.data.message);

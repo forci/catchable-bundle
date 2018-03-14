@@ -2,9 +2,32 @@
 
     <div>
 
-        <list-filter
-            :filterKeys="['message', 'class', 'file']">
-        </list-filter>
+        <div class="row">
+            <div class="col-md-12" style="display:flex;">
+
+                <div class="input-group" style="width:25%; margin:5px;">
+                    <select v-model="filter.limit" class="form-control input-sm"
+                            @input="updateLimit($event.target.value)">
+                        <option v-for="option in limitOptions" :value="option">
+                            {{ option }}
+                        </option>
+                    </select>
+                </div>
+
+                <div class="input-group" style="width:25%; margin:5px;"
+                     v-for="filterKey in filterFields">
+                    <input type="text" class="form-control input-sm"
+                           :placeholder="filterKey"
+                           :value="filter[filterKey]"
+                           @input="onFilterChange(filterKey, $event.target.value)"/>
+                    <span class="input-group-btn">
+                        <button class="btn btn-secondary" type="button" @click="onFilterChange(filterKey, null)">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </span>
+                </div>
+            </div>
+        </div>
 
         <div class="row">
             <div class="col-md-12">
@@ -13,8 +36,8 @@
                           :clickHandler="setCurrentPage"
                           :prevText="'<<'"
                           :nextText="'>>'"
-                          :initialPage="currentPage - 1"
-                          :forcePage="currentPage - 1"
+                          :initialPage="this.filter.page - 1"
+                          :forcePage="this.filter.page - 1"
                           :container-class="'pagination float-right'"
                           :page-class="'page-item'"
                           :page-link-class="'page-link'"
@@ -30,7 +53,10 @@
                                :name="'catchable' + catchable.id"
                                :ref="'catchable-row-' + catchable.id"
                                :key="'row' + catchable.id"
-                               :catchable=catchable>
+                               :catchable=catchable
+                               @catchableRemovedById="onRemoveById"
+                               @catchableRemovedByClass="onRemoveByClass"
+                    >
                     </list-item>
                 </div>
             </div>
@@ -40,8 +66,8 @@
                           :clickHandler="setCurrentPage"
                           :prevText="'<<'"
                           :nextText="'>>'"
-                          :initialPage="currentPage - 1"
-                          :forcePage="currentPage - 1"
+                          :initialPage="this.filter.page - 1"
+                          :forcePage="this.filter.page - 1"
                           :container-class="'pagination float-right'"
                           :page-class="'page-item'"
                           :page-link-class="'page-link'"
@@ -66,66 +92,109 @@
     export default {
         data() {
             return {
-                requested: false
+                filterFields: ['message', 'class', 'file'],
+                limitOptions: [2, 10, 20, 50],
+                catchables: [],
+                totalCount: 0
             };
         },
-        computed: mapGetters({
-            total: 'total',
-            pageCount: 'pageCount',
-            currentPage: 'currentPage',
-            catchables: 'getAll',
-            filter: 'getFilter',
-            loading: 'getFetchAllInProgress'
-        }),
+        computed: {
+            ...mapGetters({
+                loading: 'getFetchAllInProgress'
+            }),
+            pageCount: {
+                get() {
+                    return !this.totalCount ? 0 : Math.ceil(this.totalCount / this.filter.limit);
+                },
+                set() {
+
+                }
+            },
+            filter: {
+                get() {
+                    return Object.assign({
+                        message: null,
+                        class: null,
+                        file: null,
+                        limit: 10,
+                        page: 1
+                    }, this.$route.query);
+                },
+                set() {
+                }
+            }
+        },
         components: {
             ListItem,
             Paginate,
             ListFilter
         },
         mounted() {
-            this.$store.dispatch('loadCatchables').then((_) => {
-                this.requested = true;
-            }).catch((error) => {
-                this.requested = true;
-                this.$notify({
-                    group: 'main',
-                    classes: 'vue-notification error',
-                    title: 'Error',
-                    text: error
-                });
-            });
+            this.search();
+        },
+        watch: {
+            'filter': function () {
+                this.search();
+            }
         },
         methods: {
+            updateFilter(values) {
+                this.$router.replace({query: Object.assign(this.filter, values)});
+            },
             setCurrentPage(page) {
-                this.$store.dispatch('loadCatchables', {
-                    page: page
-                }).then((_) => {
-                    //
-                }).catch((error) => {
-                    this.$notify({
-                        group: 'main',
-                        classes: 'vue-notification error',
-                        title: 'Error',
-                        text: error
-                    });
-                })
+                this.updateFilter({page});
             },
-            onFilterChange(key, value) {
-                this.$store.dispatch('updateFilter', {
-                    key: key,
-                    value: value
-                });
+            onFilterChange: debounce(function (key, value) {
+                if (this.filter[key] === value) {
+                    return; // do not reload
+                }
 
-                this.search(this);
+                let values = {
+                    page: 1
+                };
+                values[key] = value;
+
+                this.updateFilter(values);
+            }, 500),
+            updateLimit(value) {
+                if (this.filter.limit === value) {
+                    return;
+                }
+
+                this.updateFilter({
+                    page: 1,
+                    limit: value
+                });
             },
-            search: debounce(
-                (that) => {
-                    that.$store.dispatch('loadCatchables', {
-                        page: 1
+            search() {
+                return this.$store.dispatch('getCatchables', this.filter)
+                    .then(response => {
+                        this.catchables = response.entities;
+                        this.totalCount = response.total;
+                        this.filter.page = response.page;
+
+                        return response;
                     });
-                },
-                500
-            )
+            },
+            onRemoveById() {
+                this.search()
+                    .then(response => {
+                        if (!response.entities.length && response.page > 1) {
+                            this.updateFilter({
+                                page: response.page - 1
+                            })
+                        }
+                    });
+            },
+            onRemoveByClass() {
+                this.$router.replace({
+                    name: 'list',
+                    query: Object.assign(this.filter, {
+                        class: null,
+                        page: 1
+                    })
+                });
+            }
         }
     }
 

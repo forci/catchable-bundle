@@ -39,7 +39,9 @@ class CatchableController extends Controller {
             $data = [
                 'success' => true,
                 'entities' => $formatted,
-                'total' => $repo->countForFilter($filter)
+                'total' => $repo->countForFilter($filter),
+                'page' => $filter->getPage(),
+                'limit' => $filter->getLimit()
             ];
         } catch (\Throwable $e) {
             $data = [
@@ -71,22 +73,27 @@ class CatchableController extends Controller {
         return $this->json($data);
     }
 
-    public function deleteAction(int $id) {
-        $repo = $this->get('forci.catchable.repo.catchable');
-        $data = [
-            'success' => true
-        ];
-
+    public function deleteAction(Request $request) {
         try {
-            $repo->removeById($id);
+            $repo = $this->get('forci.catchable.repo.catchable');
+
+            if ($id = $request->query->get('id')) {
+                $repo->removeById($id);
+            }
+
+            if ($class = $request->query->get('class')) {
+                $repo->removeByClass($class);
+            }
+
+            return $this->json([
+                'success' => true
+            ]);
         } catch (\Throwable $e) {
-            $data = [
+            return $this->json([
                 'success' => false,
                 'message' => $e->getMessage()
-            ];
+            ]);
         }
-
-        return $this->json($data);
     }
 
     public function deleteAllAction() {
