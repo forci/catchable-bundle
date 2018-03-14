@@ -93,7 +93,7 @@
         data() {
             return {
                 filterFields: ['message', 'class', 'file'],
-                limitOptions: [2, 10, 20, 50],
+                limitOptions: [10, 20, 50],
                 catchables: [],
                 totalCount: 0
             };
