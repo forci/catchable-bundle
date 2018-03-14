@@ -187,13 +187,19 @@
                     });
             },
             onRemoveByClass() {
-                this.$router.replace({
+                let executeSearch = 1 === this.filter.page;
+
+                this.$router.push({
                     name: 'list',
                     query: Object.assign(this.filter, {
                         class: null,
                         page: 1
                     })
                 });
+
+                if (executeSearch) {
+                    this.search();
+                }
             }
         }
     }
