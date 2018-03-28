@@ -7,8 +7,7 @@
         <service id="forci.catchable.handler.limitless_buffer" class="Forci\Bundle\Catchable\Handler\LimitlessBufferHandler"/>
 
         <service id="forci.catchable.subscriber.exception" class="Forci\Bundle\Catchable\Subscriber\ExceptionSubscriber">
-            <argument type="service" id="forci.catchable.handler.limitless_buffer"/>
-            <argument type="service" id="forci.catchable.repo.catchable"/>
+            <argument type="service" id="Forci\Bundle\Catchable\Collector\ThrowableCollector"/>
             <tag name="kernel.event_subscriber"/>
         </service>
 
@@ -18,6 +17,14 @@
 
         <service id="forci.catchable.repo.catchable" class="Forci\Bundle\Catchable\Repository\CatchableRepository" parent="forci.catchable.repo.abstract">
             <argument>Forci\Bundle\Catchable\Entity\Catchable</argument>
+        </service>
+
+        <service id="Forci\Bundle\Catchable\Serializer\ExceptionSerializer"/>
+
+        <service id="Forci\Bundle\Catchable\Collector\ThrowableCollector">
+            <argument type="service" id="Forci\Bundle\Catchable\Serializer\ExceptionSerializer"/>
+            <argument type="service" id="forci.catchable.handler.limitless_buffer"/>
+            <argument type="service" id="forci.catchable.repo.catchable"/>
         </service>
 
     </services>
