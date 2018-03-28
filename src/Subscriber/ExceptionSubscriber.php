@@ -15,16 +15,13 @@
 namespace Forci\Bundle\Catchable\Subscriber;
 
 use Forci\Bundle\Catchable\Collector\ThrowableCollector;
-use Forci\Bundle\Catchable\Entity\Catchable;
-use Forci\Bundle\Catchable\Handler\LimitlessBufferHandler;
-use Forci\Bundle\Catchable\Repository\CatchableRepository;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
 class ExceptionSubscriber implements EventSubscriberInterface {
 
-    /** @var ThrowableCollector */
+    /** @va.r ThrowableCollector */
     protected $collector;
 
     public function __construct(ThrowableCollector $collector) {
@@ -40,5 +37,4 @@ class ExceptionSubscriber implements EventSubscriberInterface {
     public function exception(GetResponseForExceptionEvent $event) {
         $this->collector->collect($event->getException());
     }
-
 }
