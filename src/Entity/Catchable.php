@@ -19,9 +19,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity(repositoryClass="Forci\Bundle\Catchable\Repository\CatchableRepository")
  * @ORM\Table(name="forci_catchable__catchables", options={"collate"="utf8mb4_unicode_ci", "charset"="utf8mb4"}, indexes={
- *     @ORM\Index(name="class", columns={"class"}),
- *     @ORM\Index(name="message", columns={"message"}),
- *     @ORM\Index(name="file", columns={"file"})
+ *     @ORM\Index(name="class", columns={"class"})
  * })
  */
 class Catchable {
