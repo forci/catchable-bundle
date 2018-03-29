@@ -40,3 +40,9 @@ Then, make a link somewhere in your app to
 ```
 
 Enjoy!
+
+--
+
+TODOs
+
+- Add file and message hashes, search by hash instead for better performance as these are text and have no indexes (Blame Doctrine for not allowing to specify index length)
