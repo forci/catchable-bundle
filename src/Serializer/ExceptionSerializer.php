@@ -15,58 +15,42 @@
 namespace Forci\Bundle\Catchable\Serializer;
 
 use Forci\Bundle\Catchable\Entity\Catchable;
+use Symfony\Component\Debug\Exception\FlattenException;
 
 class ExceptionSerializer {
 
-    public function createEntity(\Throwable $e): Catchable {
-        $catchable = new Catchable();
-        $catchable->setMessage($e->getMessage());
-        $catchable->setCode($e->getCode());
-        $catchable->setClass(get_class($e));
-        $catchable->setFile($e->getFile());
-        $catchable->setLine($e->getLine());
-        $catchable->setStackTraceString($e->getTraceAsString());
-        $catchable->setTrace($this->sanitizeTrace($e));
+    public function createEntity(\Exception $e): Catchable {
+        $throwable = $this->createEntityForFlatten(FlattenException::create($e));
+        $this->setStackTraceAsString($throwable, $e);
 
-        if ($previousEx = $e->getPrevious()) {
-            $previous = $this->createEntity($previousEx);
-            $catchable->setPrevious($previous);
+        return $throwable;
+    }
+
+    protected function setStackTraceAsString(Catchable $catchable, \Exception $e) {
+        do {
+            $catchable->setStackTraceString($e->getTraceAsString());
+            $catchable = $catchable->getPrevious();
+            $e = $e->getPrevious();
+        } while ($catchable && $e);
+    }
+
+    protected function createEntityForFlatten(FlattenException $flatten) {
+        $catchable = new Catchable();
+        $catchable->setMessage($flatten->getMessage());
+        $catchable->setCode($flatten->getCode());
+        $catchable->setTrace($flatten->getTrace());
+        $catchable->setClass($flatten->getClass());
+        $catchable->setFile($flatten->getFile());
+        $catchable->setLine($flatten->getLine());
+
+        if ($previous = $flatten->getPrevious()) {
+            $catchable->setPrevious($this->createEntityForFlatten($previous));
         }
+
+        $catchable->setStatusCode($flatten->getStatusCode());
+        $catchable->setHeaders($flatten->getHeaders());
 
         return $catchable;
     }
 
-    protected function sanitizeTrace(\Throwable $e) {
-        $trace = [];
-        foreach ($e->getTrace() as $call) {
-            $traceRow = $call;
-            $traceRow['args'] = [];
-
-            if (isset($call['args'])) {
-                foreach ($call['args'] as &$value) {
-                    if ($value instanceof \Closure) {
-                        $closureReflection = new \ReflectionFunction($value);
-                        $value = sprintf(
-                            '(Closure at %s:%s)',
-                            $closureReflection->getFileName(),
-                            $closureReflection->getStartLine()
-                        );
-                    } elseif (is_array($value)) {
-                        $value = sprintf('array %s', count($value));
-                    } elseif (is_object($value)) {
-                        $value = sprintf('object(%s)', get_class($value));
-                    } elseif (is_resource($value)) {
-                        $value = sprintf('resource(%s)', get_resource_type($value));
-                    }
-
-                    // encoding for DB safe insert
-                    $traceRow['args'][] = iconv('UTF-8', 'UTF-8//IGNORE', $value);
-                }
-            }
-
-            $trace[] = $traceRow;
-        }
-
-        return $trace;
-    }
 }

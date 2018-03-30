@@ -14,6 +14,7 @@
 
 namespace Forci\Bundle\Catchable\Collector;
 
+use Forci\Bundle\Catchable\Entity\Catchable;
 use Forci\Bundle\Catchable\Handler\LimitlessBufferHandler;
 use Forci\Bundle\Catchable\Repository\CatchableRepository;
 use Forci\Bundle\Catchable\Serializer\ExceptionSerializer;
@@ -35,9 +36,11 @@ class ThrowableCollector {
         $this->catchableRepository = $catchableRepository;
     }
 
-    public function collect(\Throwable $exception) {
+    public function collect(\Exception $exception): Catchable {
         $catchable = $this->serializer->createEntity($exception);
         $catchable->setLogs($this->bufferHandler->getLogs());
         $this->catchableRepository->save($catchable);
+
+        return $catchable;
     }
 }

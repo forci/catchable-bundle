@@ -21,6 +21,12 @@
 
         <service id="Forci\Bundle\Catchable\Serializer\ExceptionSerializer"/>
 
+        <service id="Forci\Bundle\Catchable\Serializer\CatchableSerializer" public="true">
+            <argument type="service" id="debug.file_link_formatter" on-invalid="ignore" />
+            <argument>%kernel.charset%</argument>
+            <argument>%kernel.project_dir%</argument>
+        </service>
+
         <service id="Forci\Bundle\Catchable\Collector\ThrowableCollector">
             <argument type="service" id="Forci\Bundle\Catchable\Serializer\ExceptionSerializer"/>
             <argument type="service" id="forci.catchable.handler.limitless_buffer"/>

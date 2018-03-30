@@ -23,7 +23,42 @@
             </em>
         </h6>
 
-        <div @dblclick="toggleStringTrace" v-if="!stringTraceVisible">
+        <h6 v-if="catchable.statusCode">
+            <span :class="catchable.statusCode >= 200 && catchable.statusCode < 300 ? 'badge badge-info' : 'badge badge-danger'">
+                {{ catchable.statusCode }} {{ catchable.statusCodeText }}
+            </span>
+        </h6>
+
+        <div class="form-group" v-if="catchable.headers">
+            <h5>Headers</h5>
+            <ul>
+                <li v-for="(value, header) in catchable.headers">
+                    <span class="badge badge-info">{{ header }}</span> {{ value }}
+                </li>
+            </ul>
+            <!--<ul>-->
+                <!--<li>-->
+                    <!--{{ header }}: {{ value }}-->
+                <!--</li>-->
+            <!--</ul>-->
+        </div>
+
+        <div class="btn-group">
+            <button @click="toggleMode('symfony')" :class="getButtonClass('symfony')">
+                Symfony
+            </button>
+            <button @click="toggleMode('custom')" :class="getButtonClass('custom')">
+                Custom
+            </button>
+            <button @click="toggleMode('string')" :class="getButtonClass('string')">
+                String
+            </button>
+        </div>
+
+        <br/>
+        <br/>
+
+        <div @dblclick="toggleStringTrace" v-if="'custom' == mode">
             <p v-for="(line, key) in catchable.trace"
                style="font-size: 13px; margin: 0 0 5px 0;">
                         <span class="text-secondary">
@@ -36,8 +71,38 @@
             </p>
         </div>
 
-        <div @dblclick="toggleStringTrace">
-            <p class="card-text new-line" v-if="stringTraceVisible">{{ catchable.stackTraceString }}</p>
+        <div v-if="'string' == mode">
+            <p class="card-text new-line">{{ catchable.stackTraceString }}</p>
+        </div>
+
+        <div v-if="'symfony' == mode">
+            <div class="stacktrace" v-if="catchable.trace.length">
+                <!-- This sort of became unnecessary since we have the class and message above -->
+                <!--<p style="font-size: 13px; margin: 0 0 5px 0;">-->
+                    <!--{{ catchable.class }}: {{ catchable.message ? '- ' + catchable.message : '' }}-->
+                <!--</p>-->
+
+                <p v-for="trace in catchable.trace" style="font-size: 13px; margin: 0 0 5px 0;">
+                    <template v-if="trace.file && trace.line && trace.function">
+                        at {{ trace.class + trace.type + trace.function }}
+                        (<span v-html="trace.args_formatted"></span>)
+                        <br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span v-html="trace.file_formatted"></span>)
+                    </template>
+                    <template v-else-if="trace.file && trace.line">
+                        at (<span v-html="trace.file_formatted"></span>)
+                    </template>
+                    <!--<template v-if="trace.function">-->
+                        <!--at {{ trace.class + trace.type + trace.function }}-->
+                        <!--(<span v-html="trace.args_formatted"></span>)-->
+                    <!--</template>-->
+                    <!--<template v-if="trace.file && trace.line && trace.function">-->
+                        <!--<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span v-html="trace.file_formatted"></span>)-->
+                    <!--</template>-->
+                    <!--<template v-if="trace.file && trace.line">-->
+                        <!--at (<span v-html="trace.file_formatted"></span>)-->
+                    <!--</template>-->
+                </p>
+            </div>
         </div>
 
         <div style="margin-left: 60px;" v-if="catchable.previous">
@@ -76,8 +141,13 @@
         data() {
             return {
                 previousVisible: true,
-                stringTraceVisible: false
+                mode: 'symfony' // symfony, custom, string
             };
+        },
+        mounted() {
+          console.log(this.catchable);
+          console.log(this.catchable.headers);
+          console.log(this.catchable.headers.length);
         },
         components: {
             Log
@@ -92,11 +162,18 @@
             }
         },
         methods: {
+            toggleMode(mode) {
+              this.mode = mode;
+            },
+            getButtonClass(mode) {
+                if (mode == this.mode) {
+                    return 'btn btn-primary';
+                }
+
+                return 'btn btn-default';
+            },
             togglePrevious() {
                 this.$data.previousVisible = !this.previousVisible;
-            },
-            toggleStringTrace() {
-                this.$data.stringTraceVisible = !this.stringTraceVisible;
             },
             toggleLogs() {
                 this.$data.logsVisible = !this.logsVisible;

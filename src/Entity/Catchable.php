@@ -42,9 +42,37 @@ class Catchable {
     protected $code;
 
     /**
+     * @var Catchable
+     * @ORM\OneToOne(targetEntity="Forci\Bundle\Catchable\Entity\Catchable", inversedBy="next", cascade={"persist", "remove"}, fetch="EAGER")
+     * @ORM\JoinColumn(name="previous_id", referencedColumnName="id", nullable=true, onDelete="CASCADE")
+     */
+    protected $previous;
+
+    /**
+     * @var Catchable
+     * @ORM\OneToOne(targetEntity="Forci\Bundle\Catchable\Entity\Catchable", mappedBy="previous", cascade={"persist", "remove"})
+     */
+    protected $next;
+
+    /**
+     * @ORM\Column(name="trace", type="array")
+     */
+    protected $trace;
+
+    /**
      * @ORM\Column(name="class", type="string")
      */
     protected $class;
+
+    /**
+     * @ORM\Column(name="status_code", type="string")
+     */
+    protected $statusCode;
+
+    /**
+     * @ORM\Column(name="headers", type="array")
+     */
+    protected $headers;
 
     /**
      * @ORM\Column(name="file", type="text")
@@ -62,27 +90,9 @@ class Catchable {
     protected $stackTraceString;
 
     /**
-     * @ORM\Column(name="trace", type="array")
-     */
-    protected $trace;
-
-    /**
      * @ORM\Column(name="created_at", type="datetime")
      */
     private $createdAt;
-
-    /**
-     * @var Catchable
-     * @ORM\OneToOne(targetEntity="Forci\Bundle\Catchable\Entity\Catchable", inversedBy="next", cascade={"persist", "remove"}, fetch="EAGER")
-     * @ORM\JoinColumn(name="previous_id", referencedColumnName="id", nullable=true, onDelete="CASCADE")
-     */
-    protected $previous;
-
-    /**
-     * @var Catchable
-     * @ORM\OneToOne(targetEntity="Forci\Bundle\Catchable\Entity\Catchable", mappedBy="previous", cascade={"persist", "remove"})
-     */
-    protected $next;
 
     /**
      * @ORM\Column(name="logs", type="array", nullable=true)
@@ -90,6 +100,13 @@ class Catchable {
     protected $logs;
 
     public function toArray(): array {
+        $trace = $this->trace;
+
+        foreach ($trace as $key => $t) {
+            $t['args_formatted'] = $this->formatArgs($t['args']);
+            $trace[$key] = $t;
+        }
+
         $dataArray = [
             'id' => $this->id,
             'message' => $this->message,
@@ -98,12 +115,14 @@ class Catchable {
             'file' => $this->file,
             'line' => $this->line,
             'stackTraceString' => $this->stackTraceString,
-            'trace' => $this->trace,
-            'createdAt' => $this->createdAt->getTimestamp()
+            'trace' => $trace,
+            'createdAt' => $this->createdAt->getTimestamp(),
+            'headers' => $this->headers,
+            'statusCode' => $this->statusCode
         ];
 
         if ($this->previous) {
-            $dataArray['previous'] = $this->previous->toArray();
+            $dataArray['previous'] = $this->getPrevious()->toArray();
         }
 
         if ($this->logs) {
@@ -116,6 +135,10 @@ class Catchable {
         }
 
         return $dataArray;
+    }
+
+    public function getPrevious(): ?Catchable {
+        return $this->previous;
     }
 
     public function __construct() {
@@ -336,18 +359,53 @@ class Catchable {
      *
      * @return Catchable
      */
-    public function setPrevious(\Forci\Bundle\Catchable\Entity\Catchable $previous = null) {
+    public function setPrevious(?\Forci\Bundle\Catchable\Entity\Catchable $previous) {
         $this->previous = $previous;
 
         return $this;
     }
 
     /**
-     * Get previous.
-     *
-     * @return \Forci\Bundle\Catchable\Entity\Catchable|null
+     * @return Catchable
      */
-    public function getPrevious() {
-        return $this->previous;
+    public function getNext(): ?Catchable {
+        return $this->next;
     }
+
+    /**
+     * @param Catchable $next
+     */
+    public function setNext(?Catchable $next): void {
+        $this->next = $next;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getStatusCode() {
+        return $this->statusCode;
+    }
+
+    /**
+     * @param mixed $statusCode
+     */
+    public function setStatusCode($statusCode): void {
+        $this->statusCode = $statusCode;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getHeaders() {
+        return $this->headers;
+    }
+
+    /**
+     * @param mixed $headers
+     */
+    public function setHeaders($headers): void {
+        $this->headers = $headers;
+    }
+
+
 }
