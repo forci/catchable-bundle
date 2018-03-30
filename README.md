@@ -46,3 +46,4 @@ Enjoy!
 TODOs
 
 - Add file and message hashes, search by hash instead for better performance as these are text and have no indexes (Blame Doctrine for not allowing to specify index length)
+- Rename to ExceptionBundle, ExceptionCollector, ExceptionSerializer, etc
