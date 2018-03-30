@@ -36,11 +36,6 @@
                     <span class="badge badge-info">{{ header }}</span> {{ value }}
                 </li>
             </ul>
-            <!--<ul>-->
-                <!--<li>-->
-                    <!--{{ header }}: {{ value }}-->
-                <!--</li>-->
-            <!--</ul>-->
         </div>
 
         <div class="btn-group">
@@ -91,16 +86,6 @@
                     <template v-else-if="trace.file && trace.line">
                         at (<span v-html="trace.file_formatted"></span>)
                     </template>
-                    <!--<template v-if="trace.function">-->
-                        <!--at {{ trace.class + trace.type + trace.function }}-->
-                        <!--(<span v-html="trace.args_formatted"></span>)-->
-                    <!--</template>-->
-                    <!--<template v-if="trace.file && trace.line && trace.function">-->
-                        <!--<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span v-html="trace.file_formatted"></span>)-->
-                    <!--</template>-->
-                    <!--<template v-if="trace.file && trace.line">-->
-                        <!--at (<span v-html="trace.file_formatted"></span>)-->
-                    <!--</template>-->
                 </p>
             </div>
         </div>
