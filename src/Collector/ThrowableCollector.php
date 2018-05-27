@@ -36,7 +36,7 @@ class ThrowableCollector {
         $this->catchableRepository = $catchableRepository;
     }
 
-    public function collect(\Exception $exception): Catchable {
+    public function collect(\Throwable $exception): Catchable {
         $catchable = $this->serializer->createEntity($exception);
         $catchable->setLogs($this->bufferHandler->getLogs());
         $this->catchableRepository->save($catchable);
