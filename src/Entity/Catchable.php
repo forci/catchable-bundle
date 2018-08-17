@@ -43,14 +43,15 @@ class Catchable {
 
     /**
      * @var Catchable
-     * @ORM\OneToOne(targetEntity="Forci\Bundle\Catchable\Entity\Catchable", inversedBy="next", cascade={"persist", "remove"}, fetch="EAGER")
+     * @ORM\OneToOne(targetEntity="Forci\Bundle\Catchable\Entity\Catchable", fetch="EAGER")
      * @ORM\JoinColumn(name="previous_id", referencedColumnName="id", nullable=true, onDelete="CASCADE")
      */
     protected $previous;
 
     /**
      * @var Catchable
-     * @ORM\OneToOne(targetEntity="Forci\Bundle\Catchable\Entity\Catchable", mappedBy="previous", cascade={"persist", "remove"})
+     * @ORM\OneToOne(targetEntity="Forci\Bundle\Catchable\Entity\Catchable", fetch="EAGER")
+     * @ORM\JoinColumn(name="next_id", referencedColumnName="id", nullable=true, onDelete="CASCADE")
      */
     protected $next;
 
@@ -99,46 +100,24 @@ class Catchable {
      */
     protected $logs;
 
-    public function toArray(): array {
-        $trace = $this->trace;
-
-        foreach ($trace as $key => $t) {
-            $t['args_formatted'] = $this->formatArgs($t['args']);
-            $trace[$key] = $t;
-        }
-
-        $dataArray = [
-            'id' => $this->id,
-            'message' => $this->message,
-            'code' => $this->code,
-            'class' => $this->class,
-            'file' => $this->file,
-            'line' => $this->line,
-            'stackTraceString' => $this->stackTraceString,
-            'trace' => $trace,
-            'createdAt' => $this->createdAt->getTimestamp(),
-            'headers' => $this->headers,
-            'statusCode' => $this->statusCode
-        ];
-
-        if ($this->previous) {
-            $dataArray['previous'] = $this->getPrevious()->toArray();
-        }
-
-        if ($this->logs) {
-            foreach ($this->logs as $key => $log) {
-                if (isset($log['datetime'])) {
-                    $log['timestamp'] = $log['datetime']->getTimestamp();
-                }
-                $dataArray['logs'][] = $log;
-            }
-        }
-
-        return $dataArray;
-    }
-
     public function getPrevious(): ?Catchable {
         return $this->previous;
+    }
+
+    public function setPrevious(?Catchable $previous) {
+        $this->previous = $previous;
+
+        return $this;
+    }
+
+    public function getNext(): ?Catchable {
+        return $this->next;
+    }
+
+    public function setNext(?Catchable $next) {
+        $this->next = $next;
+
+        return $this;
     }
 
     public function __construct() {
@@ -353,33 +332,6 @@ class Catchable {
     }
 
     /**
-     * Set previous.
-     *
-     * @param \Forci\Bundle\Catchable\Entity\Catchable|null $previous
-     *
-     * @return Catchable
-     */
-    public function setPrevious(?\Forci\Bundle\Catchable\Entity\Catchable $previous) {
-        $this->previous = $previous;
-
-        return $this;
-    }
-
-    /**
-     * @return Catchable
-     */
-    public function getNext(): ?Catchable {
-        return $this->next;
-    }
-
-    /**
-     * @param Catchable $next
-     */
-    public function setNext(?Catchable $next): void {
-        $this->next = $next;
-    }
-
-    /**
      * @return mixed
      */
     public function getStatusCode() {
@@ -406,6 +358,4 @@ class Catchable {
     public function setHeaders($headers): void {
         $this->headers = $headers;
     }
-
-
 }

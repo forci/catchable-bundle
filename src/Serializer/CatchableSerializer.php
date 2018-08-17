@@ -1,5 +1,17 @@
 <?php
 
+/*
+ * This file is part of the ForciCatchableBundle package.
+ *
+ * Copyright (c) Forci Web Consulting Ltd.
+ *
+ * Author Tatyana Mincheva <tatjana@forci.com>
+ * Author Martin Kirilov <martin@forci.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Forci\Bundle\Catchable\Serializer;
 
 use Forci\Bundle\Catchable\Entity\Catchable;
@@ -18,7 +30,7 @@ class CatchableSerializer {
     public function __construct($fileLinkFormat, string $charset, string $projectDir) {
         $this->fileLinkFormat = $fileLinkFormat ?: ini_get('xdebug.file_link_format') ?: get_cfg_var('xdebug.file_link_format');
         $this->charset = $charset;
-        $this->projectDir = rtrim($projectDir, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+        $this->projectDir = rtrim($projectDir, DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR;
     }
 
     public function serialize(Catchable $catchable): array {
@@ -71,7 +83,7 @@ class CatchableSerializer {
     }
 
     protected function formatArgs($args) {
-        $result = array();
+        $result = [];
         foreach ($args as $key => $item) {
             if ('object' === $item[0]) {
                 $parts = explode('\\', $item[1]);
@@ -82,7 +94,7 @@ class CatchableSerializer {
             } elseif ('null' === $item[0]) {
                 $formattedValue = '<em>null</em>';
             } elseif ('boolean' === $item[0]) {
-                $formattedValue = '<em>' . strtolower(var_export($item[1], true)) . '</em>';
+                $formattedValue = '<em>'.strtolower(var_export($item[1], true)).'</em>';
             } elseif ('resource' === $item[0]) {
                 $formattedValue = '<em>resource</em>';
             } else {
@@ -112,12 +124,11 @@ class CatchableSerializer {
             if (0 === strpos($text, $this->projectDir)) {
                 $text = substr($text, strlen($this->projectDir));
                 $text = explode(DIRECTORY_SEPARATOR, $text, 2);
-                $text = sprintf('<abbr title="%s%2$s">%s</abbr>%s', $this->projectDir, $text[0], isset($text[1]) ? DIRECTORY_SEPARATOR . $text[1] : '');
+                $text = sprintf('<abbr title="%s%2$s">%s</abbr>%s', $this->projectDir, $text[0], isset($text[1]) ? DIRECTORY_SEPARATOR.$text[1] : '');
             }
         }
 
         return sprintf('%s at line %s', $text, $line);
-
 
         // Original Twig Extension Code
         $file = trim($file);
@@ -127,7 +138,7 @@ class CatchableSerializer {
             if (0 === strpos($text, $this->projectDir)) {
                 $text = substr($text, strlen($this->projectDir));
                 $text = explode(DIRECTORY_SEPARATOR, $text, 2);
-                $text = sprintf('<abbr title="%s%2$s">%s</abbr>%s', $this->projectDir, $text[0], isset($text[1]) ? DIRECTORY_SEPARATOR . $text[1] : '');
+                $text = sprintf('<abbr title="%s%2$s">%s</abbr>%s', $this->projectDir, $text[0], isset($text[1]) ? DIRECTORY_SEPARATOR.$text[1] : '');
             }
         }
 
@@ -150,10 +161,9 @@ class CatchableSerializer {
      */
     public function getFileLink($file, $line) {
         if ($fmt = $this->fileLinkFormat) {
-            return is_string($fmt) ? strtr($fmt, array('%f' => $file, '%l' => $line)) : $fmt->format($file, $line);
+            return is_string($fmt) ? strtr($fmt, ['%f' => $file, '%l' => $line]) : $fmt->format($file, $line);
         }
 
         return false;
     }
-
 }

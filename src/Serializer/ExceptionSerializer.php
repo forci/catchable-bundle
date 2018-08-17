@@ -57,7 +57,9 @@ class ExceptionSerializer {
         $catchable->setLine($flatten->getLine());
 
         if ($previous = $flatten->getPrevious()) {
-            $catchable->setPrevious($this->createEntityForFlatten($previous));
+            $previous = $this->createEntityForFlatten($previous);
+            $catchable->setPrevious($previous);
+            $previous->setNext($catchable);
         }
 
         $catchable->setStatusCode($flatten->getStatusCode());
@@ -65,5 +67,4 @@ class ExceptionSerializer {
 
         return $catchable;
     }
-
 }

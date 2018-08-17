@@ -20,13 +20,6 @@ use Forci\Bundle\Catchable\Filter\CatchableFilter;
 
 class CatchableRepository extends EntityRepository {
 
-    /**
-     * @param int $id
-     *
-     * @return Catchable|null
-     *
-     * @throws \Doctrine\ORM\NonUniqueResultException
-     */
     public function findOneById(int $id): ?Catchable {
         $builder = $this->createQueryBuilder('c')
             ->addSelect('c')
@@ -127,50 +120,53 @@ class CatchableRepository extends EntityRepository {
     }
 
     /**
-     * @param Catchable $catchable
+     * @param Catchable $current
      *
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      */
-    public function save(Catchable $catchable) {
+    public function save(Catchable $current) {
         $em = $this->getEntityManager();
-        $em->persist($catchable);
-        $em->flush($catchable);
+
+        $em->persist($current);
+
+        while ($previous = $current->getPrevious()) {
+            $previous->setNext($current);
+            $em->persist($previous);
+            $current = $previous;
+        }
+
+        $em->flush();
     }
 
     /**
      * @param int $id
      *
-     * @throws \Doctrine\ORM\NonUniqueResultException
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function removeById(int $id) {
-        $catchable = $this->findOneById($id);
+        $em = $this->getEntityManager();
 
-        if ($catchable) {
-            $em = $this->getEntityManager();
-            $em->remove($catchable);
-            $em->flush();
-        }
+        $dql = sprintf('DELETE FROM %s c WHERE c.id = :id', Catchable::class);
+
+        $query = $em->createQuery($dql);
+
+        $query->execute([
+            'id' => $id
+        ]);
     }
 
-    /**
-     * @param int $id
-     *
-     * @throws \Doctrine\ORM\NonUniqueResultException
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
-     */
     public function removeByClass(string $class) {
         $em = $this->getEntityManager();
-        $exceptions = $this->findByClass($class);
 
-        foreach ($exceptions as $catchable) {
-            $em->remove($catchable);
-        }
+        $dql = sprintf('DELETE FROM %s c WHERE c.class = :class', Catchable::class);
 
-        $em->flush();
+        $query = $em->createQuery($dql);
+
+        $query->execute([
+            'class' => $class
+        ]);
     }
 
     public function removeAll() {
