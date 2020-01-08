@@ -11,7 +11,7 @@
             <tag name="kernel.event_subscriber"/>
         </service>
 
-        <service id="forci.catchable.repo.abstract" abstract="true">
+        <service id="forci.catchable.repo.abstract" abstract="true" public="true">
             <factory service="forci.catchable.entity_manager" method="getRepository"/>
         </service>
 
@@ -31,6 +31,15 @@
             <argument type="service" id="Forci\Bundle\Catchable\Serializer\ExceptionSerializer"/>
             <argument type="service" id="forci.catchable.handler.limitless_buffer"/>
             <argument type="service" id="forci.catchable.repo.catchable"/>
+        </service>
+
+        <service id="Forci\Bundle\Catchable\Controller\IndexController" public="true">
+            <tag name="controller.service_arguments"/>
+        </service>
+        <service id="Forci\Bundle\Catchable\Controller\CatchableController" public="true">
+            <argument type="service" id="forci.catchable.repo.catchable"/>
+            <argument type="service" id="Forci\Bundle\Catchable\Serializer\CatchableSerializer"/>
+            <tag name="controller.service_arguments"/>
         </service>
 
     </services>

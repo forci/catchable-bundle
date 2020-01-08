@@ -14,9 +14,9 @@
 
 namespace Forci\Bundle\Catchable\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-class IndexController extends Controller {
+class IndexController extends AbstractController {
 
     public function indexAction() {
         return $this->render('@ForciCatchable/Index/index.html.twig');

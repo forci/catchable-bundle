@@ -15,31 +15,18 @@
 namespace Forci\Bundle\Catchable\Serializer;
 
 use Forci\Bundle\Catchable\Entity\Catchable;
-use Symfony\Component\Debug\Exception\FatalThrowableError;
-use Symfony\Component\Debug\Exception\FlattenException;
+use Symfony\Component\ErrorHandler\Exception\FlattenException;
 
 class ExceptionSerializer {
 
     public function createEntity(\Throwable $e): Catchable {
-        $e = $this->convertIfThrowable($e);
-
-        $throwable = $this->createEntityForFlatten(FlattenException::create($e));
+        $throwable = $this->createEntityForFlatten(FlattenException::createFromThrowable($e));
         $this->setStackTraceAsString($throwable, $e);
 
         return $throwable;
     }
 
-    protected function convertIfThrowable(\Throwable $e): \Exception {
-        if ($e instanceof \Exception) {
-            return $e;
-        } elseif ($e instanceof \Throwable) {
-            return new FatalThrowableError($e);
-        }
-
-        return $e;
-    }
-
-    protected function setStackTraceAsString(Catchable $catchable, \Exception $e) {
+    protected function setStackTraceAsString(Catchable $catchable, \Throwable $e) {
         do {
             $catchable->setStackTraceString($e->getTraceAsString());
             $catchable = $catchable->getPrevious();

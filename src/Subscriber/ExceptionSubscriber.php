@@ -16,7 +16,7 @@ namespace Forci\Bundle\Catchable\Subscriber;
 
 use Forci\Bundle\Catchable\Collector\ThrowableCollector;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
+use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
 class ExceptionSubscriber implements EventSubscriberInterface {
@@ -34,7 +34,7 @@ class ExceptionSubscriber implements EventSubscriberInterface {
         ];
     }
 
-    public function exception(GetResponseForExceptionEvent $event) {
-        $this->collector->collect($event->getException());
+    public function exception(ExceptionEvent $event) {
+        $this->collector->collect($event->getThrowable());
     }
 }

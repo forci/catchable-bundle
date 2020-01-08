@@ -17,16 +17,27 @@ namespace Forci\Bundle\Catchable\Controller;
 use Forci\Bundle\Catchable\Entity\Catchable;
 use Forci\Bundle\Catchable\Filter\CatchableFilter;
 use Forci\Bundle\Catchable\Form\CatchableFilterType;
+use Forci\Bundle\Catchable\Repository\CatchableRepository;
 use Forci\Bundle\Catchable\Serializer\CatchableSerializer;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 
-class CatchableController extends Controller {
+class CatchableController extends AbstractController {
+
+    /** @var CatchableRepository */
+    private $repository;
+
+    /** @var CatchableSerializer */
+    private $serializer;
+
+    public function __construct(
+        CatchableRepository $repository, CatchableSerializer $serializer
+    ) {
+        $this->repository = $repository;
+        $this->serializer = $serializer;
+    }
 
     public function listAction(Request $request) {
-        $repo = $this->get('forci.catchable.repo.catchable');
-        $serializer = $this->get(CatchableSerializer::class);
-
         try {
             $filter = new CatchableFilter();
             $filterForm = $this->createForm(CatchableFilterType::class, $filter);
@@ -34,14 +45,14 @@ class CatchableController extends Controller {
 
             $formatted = [];
             /** @var Catchable $entity */
-            foreach ($repo->filter($filter) as $entity) {
-                $formatted[] = $serializer->serialize($entity);
+            foreach ($this->repository->filter($filter) as $entity) {
+                $formatted[] = $this->serializer->serialize($entity);
             }
 
             $data = [
                 'success' => true,
                 'entities' => $formatted,
-                'total' => $repo->countForFilter($filter),
+                'total' => $this->repository->countForFilter($filter),
                 'page' => $filter->getPage(),
                 'limit' => $filter->getLimit()
             ];
@@ -56,16 +67,13 @@ class CatchableController extends Controller {
     }
 
     public function getAction(int $id) {
-        $repo = $this->get('forci.catchable.repo.catchable');
-        $serializer = $this->get(CatchableSerializer::class);
-
         try {
             /** @var Catchable $entity */
-            $entity = $repo->findOneById($id);
+            $entity = $this->repository->findOneById($id);
 
             $data = [
                 'success' => true,
-                'entity' => $entity ? $serializer->serialize($entity) : null
+                'entity' => $entity ? $this->serializer->serialize($entity) : null
             ];
         } catch (\Throwable $e) {
             $data = [
@@ -79,14 +87,12 @@ class CatchableController extends Controller {
 
     public function deleteAction(Request $request) {
         try {
-            $repo = $this->get('forci.catchable.repo.catchable');
-
             if ($id = $request->query->get('id')) {
-                $repo->removeById($id);
+                $this->repository->removeById($id);
             }
 
             if ($class = $request->query->get('class')) {
-                $repo->removeByClass($class);
+                $this->repository->removeByClass($class);
             }
 
             return $this->json([
@@ -101,13 +107,12 @@ class CatchableController extends Controller {
     }
 
     public function deleteAllAction() {
-        $repo = $this->get('forci.catchable.repo.catchable');
         $data = [
             'success' => true
         ];
 
         try {
-            $repo->removeAll();
+            $this->repository->removeAll();
         } catch (\Throwable $e) {
             $data = [
                 'success' => false,
