@@ -61,6 +61,26 @@ monolog:
             id: forci.catchable.monolog.handler.log_buffer
 ```
 
+You could also pass Catchable's logs through a FilterHandler to get rid of bloat such as deprecations.
+This allows you to only have critical error information persisted, but deprecations logged to a file by the remaining handlers.
+Either use accepted_levels or min_level / max_level, whichever suits your needs best.
+Just be careful if allowing deprecations to be persisted. Upon many 404 errors, you'll get the database fill up quickly with redundant data.
+In the future, functionality like ignored errors (such as the aforementioned HttpNotFoundException) will be added.
+
+```yaml
+        catchable:
+            type: filter
+            handler: catchable_real
+            # Either
+#            min_level: debug
+#            max_level: emergency
+            # Or
+            accepted_levels: [debug, critical]
+        catchable_real:
+            type: service
+            id: forci.catchable.monolog.handler.log_buffer
+```
+
 Alternatively, instead of fingers_crossed, you could use a filter or buffer or any other handler.
 Please note: When using buffer, it must flush at some point. This must also happen BEFORE the ExceptionSubscriber is fired.
 As it is, using it alongside your fingers_crossed file and/or email logging is the best approach.
@@ -123,6 +143,7 @@ Enjoy!
 
 TODOs
 
+- Make it possible to ignore an exception class
 - Add a "Hide User Deprecated" checkbox that hides log messages starting with "User Deprecated"
 - Add file and message hashes, search by hash instead for better performance as these are text and have no indexes (Blame Doctrine for not allowing to specify index length)
 - Rename to ExceptionBundle, ExceptionCollector, ExceptionSerializer, etc
