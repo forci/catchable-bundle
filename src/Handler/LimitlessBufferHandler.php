@@ -14,7 +14,9 @@
 
 namespace Forci\Bundle\Catchable\Handler;
 
+use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\AbstractHandler;
+use Monolog\Logger;
 
 class LimitlessBufferHandler extends AbstractHandler {
 
@@ -23,6 +25,11 @@ class LimitlessBufferHandler extends AbstractHandler {
 
     /** @var bool */
     protected $initialized = false;
+
+    public function __construct($level = Logger::DEBUG, $bubble = true) {
+        parent::__construct($level, $bubble);
+        $this->setFormatter(new LineFormatter());
+    }
 
     public function handle(array $record) {
         if (!$this->initialized) {
@@ -37,7 +44,7 @@ class LimitlessBufferHandler extends AbstractHandler {
             }
         }
 
-        $this->buffer[] = $record;
+        $this->buffer[] = $this->getFormatter()->format($record);
 
         return false === $this->bubble;
     }

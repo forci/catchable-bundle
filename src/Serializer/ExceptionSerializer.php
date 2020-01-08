@@ -20,10 +20,10 @@ use Symfony\Component\ErrorHandler\Exception\FlattenException;
 class ExceptionSerializer {
 
     public function createEntity(\Throwable $e): Catchable {
-        $throwable = $this->createEntityForFlatten(FlattenException::createFromThrowable($e));
-        $this->setStackTraceAsString($throwable, $e);
+        $catchable = $this->createEntityForFlatten(FlattenException::createFromThrowable($e));
+        $this->setStackTraceAsString($catchable, $e);
 
-        return $throwable;
+        return $catchable;
     }
 
     protected function setStackTraceAsString(Catchable $catchable, \Throwable $e) {

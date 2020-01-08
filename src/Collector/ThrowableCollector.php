@@ -30,7 +30,9 @@ class ThrowableCollector {
     /** @var CatchableRepository */
     protected $catchableRepository;
 
-    public function __construct(ExceptionSerializer $serializer, LimitlessBufferHandler $bufferHandler, CatchableRepository $catchableRepository) {
+    public function __construct(
+        ExceptionSerializer $serializer, LimitlessBufferHandler $bufferHandler, CatchableRepository $catchableRepository
+    ) {
         $this->serializer = $serializer;
         $this->bufferHandler = $bufferHandler;
         $this->catchableRepository = $catchableRepository;
