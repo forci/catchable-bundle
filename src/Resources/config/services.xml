@@ -4,7 +4,6 @@
 
     <services>
 
-<!--        <service id="forci.catchable.handler.limitless_buffer" class="Forci\Bundle\Catchable\Handler\LimitlessBufferHandler"/>-->
         <service id="forci.catchable.monolog.handler.log_buffer" class="Forci\Bundle\Catchable\Monolog\Handler\LogBufferHandler"/>
 
         <service id="forci.catchable.subscriber.exception" class="Forci\Bundle\Catchable\Subscriber\ExceptionSubscriber">

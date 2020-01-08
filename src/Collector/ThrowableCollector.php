@@ -15,20 +15,20 @@
 namespace Forci\Bundle\Catchable\Collector;
 
 use Forci\Bundle\Catchable\Entity\Catchable;
-use Forci\Bundle\Catchable\Handler\LimitlessBufferHandler;
+use Forci\Bundle\Catchable\Monolog\Handler\LogBufferHandler;
 use Forci\Bundle\Catchable\Repository\CatchableRepository;
 use Symfony\Component\ErrorHandler\Exception\FlattenException;
 
 class ThrowableCollector {
 
-    /** @var LimitlessBufferHandler */
+    /** @var LogBufferHandler */
     protected $bufferHandler;
 
     /** @var CatchableRepository */
     protected $catchableRepository;
 
     public function __construct(
-        LimitlessBufferHandler $bufferHandler, CatchableRepository $catchableRepository
+        LogBufferHandler $bufferHandler, CatchableRepository $catchableRepository
     ) {
         $this->bufferHandler = $bufferHandler;
         $this->catchableRepository = $catchableRepository;
