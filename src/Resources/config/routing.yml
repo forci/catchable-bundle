@@ -1,7 +1,7 @@
 forci_catchable_root:
     path: /
+    controller: Symfony\Bundle\FrameworkBundle\Controller\RedirectController::redirectAction
     defaults:
-        _controller: FrameworkBundle:Redirect:redirect
         route: forci_catchable_index
 
 forci_catchable_index:
