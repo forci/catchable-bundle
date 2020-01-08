@@ -123,6 +123,7 @@ Enjoy!
 
 TODOs
 
+- Add a "Hide User Deprecated" checkbox that hides log messages starting with "User Deprecated"
 - Add file and message hashes, search by hash instead for better performance as these are text and have no indexes (Blame Doctrine for not allowing to specify index length)
 - Rename to ExceptionBundle, ExceptionCollector, ExceptionSerializer, etc
 - Add filter exceptions config
