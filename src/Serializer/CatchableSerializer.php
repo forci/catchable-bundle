@@ -73,7 +73,7 @@ class CatchableSerializer {
         if ($catchable->getLogs()) {
             foreach ($catchable->getLogs() as $key => $log) {
                 if (isset($log['datetime'])) {
-                    $log['timestamp'] = $log['datetime']->getTimestamp();
+                    $log['timestamp'] = (new \DateTime($log['datetime']))->getTimestamp();
                 }
                 $dataArray['logs'][] = $log;
             }
