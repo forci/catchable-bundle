@@ -4,7 +4,8 @@
 
     <services>
 
-        <service id="forci.catchable.handler.limitless_buffer" class="Forci\Bundle\Catchable\Handler\LimitlessBufferHandler"/>
+<!--        <service id="forci.catchable.handler.limitless_buffer" class="Forci\Bundle\Catchable\Handler\LimitlessBufferHandler"/>-->
+        <service id="forci.catchable.monolog.handler.log_buffer" class="Forci\Bundle\Catchable\Monolog\Handler\LogBufferHandler"/>
 
         <service id="forci.catchable.subscriber.exception" class="Forci\Bundle\Catchable\Subscriber\ExceptionSubscriber">
             <argument type="service" id="Forci\Bundle\Catchable\Collector\ThrowableCollector"/>
@@ -19,8 +20,6 @@
             <argument>Forci\Bundle\Catchable\Entity\Catchable</argument>
         </service>
 
-        <service id="Forci\Bundle\Catchable\Serializer\ExceptionSerializer"/>
-
         <service id="Forci\Bundle\Catchable\Serializer\CatchableSerializer" public="true">
             <argument type="service" id="debug.file_link_formatter" on-invalid="ignore" />
             <argument>%kernel.charset%</argument>
@@ -28,8 +27,7 @@
         </service>
 
         <service id="Forci\Bundle\Catchable\Collector\ThrowableCollector">
-            <argument type="service" id="Forci\Bundle\Catchable\Serializer\ExceptionSerializer"/>
-            <argument type="service" id="forci.catchable.handler.limitless_buffer"/>
+            <argument type="service" id="forci.catchable.monolog.handler.log_buffer"/>
             <argument type="service" id="forci.catchable.repo.catchable"/>
         </service>
 

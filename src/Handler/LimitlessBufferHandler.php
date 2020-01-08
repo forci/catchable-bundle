@@ -14,45 +14,32 @@
 
 namespace Forci\Bundle\Catchable\Handler;
 
-use Monolog\Formatter\LineFormatter;
+use Monolog\Formatter\ScalarFormatter;
 use Monolog\Handler\AbstractHandler;
 use Monolog\Logger;
+use Monolog\Processor\ProcessorInterface;
 
 class LimitlessBufferHandler extends AbstractHandler {
 
     /** @var [] */
     protected $buffer = [];
 
-    /** @var bool */
-    protected $initialized = false;
-
     public function __construct($level = Logger::DEBUG, $bubble = true) {
         parent::__construct($level, $bubble);
-        $this->setFormatter(new LineFormatter());
+        $this->setFormatter(new ScalarFormatter());
     }
 
     public function handle(array $record) {
-        if (!$this->initialized) {
-            // __destructor() doesn't get called on Fatal errors
-            register_shutdown_function([$this, 'close']);
-            $this->initialized = true;
-        }
-
         if ($this->processors) {
+            /** @var ProcessorInterface $processor */
             foreach ($this->processors as $processor) {
-                $record = call_user_func($processor, $record);
+                $record = $processor($record);
             }
         }
 
         $this->buffer[] = $this->getFormatter()->format($record);
 
         return false === $this->bubble;
-    }
-
-    public function __destruct() {
-        // suppress the parent behavior since we already have register_shutdown_function()
-        // to call close(), and the reference contained there will prevent this from being
-        // GC'd until the end of the request
     }
 
     public function close() {

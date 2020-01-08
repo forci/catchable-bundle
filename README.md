@@ -15,8 +15,72 @@ Better yet, create a completely separate database. Having a separate entity mana
 
 The above configuration uses the default one and WILL NOT WORK in case you have an exception thrown by Doctrine, as it will also close the entity manager which is responsible for writing it to the database.
 
-WARNING: This bundle is NOT meant to be a replacement for your file or else logging. It is meant to work alongside your existing infrastructure and make viewing errors easier and nicer.
+WARNING: This bundle is NOT meant to be a replacement for your file or else logging. It is meant to work alongside your existing infrastructure and make viewing errors easier and nicer via your admin interface.
 
+## Versions >= ~0.6
+
+In your config_prod.yml
+
+```yaml
+monolog:
+    handlers:
+        main:
+            type:         fingers_crossed
+            action_level: critical
+            handler:      grouped
+        grouped:
+            type:    group
+            members: [streamed, buffered, catchable]
+        # Log errors to a file
+        streamed:
+            type:  stream
+            path:  "%kernel.logs_dir%/%kernel.environment%.log"
+            level: debug
+            include_stacktraces: true
+        # Buffer errors to be sent via swift mailer
+        buffered:
+            type:    buffer
+            handler: swift
+        # Actual swift mailer handler that gets invoked when action_level: critical
+        # from the main handler occurs
+        swift:
+            type:       swift_mailer
+            from_email: errors@some-domain.com
+            to_email:   "dev1@some-domain.com"
+            # or list of recipients
+            # to_email:   [dev1@some-domain.com, dev2@some-domain.com, ...]
+            subject:    "[My Project] An Error in PROD Occurred!"
+            level:      debug
+            include_stacktraces: true
+        # CatchableBundle's buffer handler. Logs are formatted using the hardcoded \Monolog\Formatter\ScalarFormatter
+        # and stored locally in an array. After that, upon an Exception, the `Forci\Bundle\Catchable\Subscriber\ExceptionSubscriber`
+        # is invoked, and fetches the logs from this buffer handler. This allows you to have your Symfony logs persisted
+        # together with the serialized \Throwable instance.
+        catchable:
+            type: service
+            id: forci.catchable.monolog.handler.log_buffer
+```
+
+Alternatively, instead of fingers_crossed, you could use a filter or buffer or any other handler.
+Please note: When using buffer, it must flush at some point. This must also happen BEFORE the ExceptionSubscriber is fired.
+As it is, using it alongside your fingers_crossed file and/or email logging is the best approach.
+Other handlers haven't been tested with Catchable's buffer service. Use at your own risk.
+
+```yaml
+monolog:
+    handlers:
+        # Filter logs to a level you'd like
+        filter:
+            type: filter
+            level: debug
+            handler: catchable
+        # Then channel them into Catchable's buffer for use by the ExceptionSubscriber as described above
+        catchable:
+            type: service
+            id: forci.catchable.monolog.handler.log_buffer
+```
+
+## Versions <= ~0.5
 In your config_prod.yml
 
 ```yaml
@@ -40,6 +104,20 @@ Then, make a link somewhere in your app to
 ```
 
 Enjoy!
+
+## Release 0.6
+
+- Improved buffer handler. You can now configure it in your main chain of handlers.
+- Removed deprecations. Allows Symfony 5 compatibility.
+- Now uses `FlattenException` from Symfony's `ErrorHandler` component, rather than `Debug`.
+- Removed hack around serializing `\Throwable` via the deprecated `FatalThrowableError` class.
+
+## Upgrade 0.5 -> 0.6
+
+- Symfony requirements are now ~4.4|~5.0
+- The `Forci\Bundle\Catchable\Serializer\ExceptionSerializer` service is removed. All of its code are now in `Forci\Bundle\Catchable\Collector\ThrowableCollector`
+- The `forci.catchable.handler.limitless_buffer` service has been removed in favor of a simpler `forci.catchable.monolog.handler.log_buffer`
+- Your buffering and/or filtering logic must now be handled by any of the built-in Monolog handlers. This makes buffering relevant logs more streamlined and in line with your other handlers.
 
 --
 

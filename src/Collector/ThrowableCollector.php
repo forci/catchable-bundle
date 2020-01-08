@@ -17,12 +17,9 @@ namespace Forci\Bundle\Catchable\Collector;
 use Forci\Bundle\Catchable\Entity\Catchable;
 use Forci\Bundle\Catchable\Handler\LimitlessBufferHandler;
 use Forci\Bundle\Catchable\Repository\CatchableRepository;
-use Forci\Bundle\Catchable\Serializer\ExceptionSerializer;
+use Symfony\Component\ErrorHandler\Exception\FlattenException;
 
 class ThrowableCollector {
-
-    /** @var ExceptionSerializer */
-    protected $serializer;
 
     /** @var LimitlessBufferHandler */
     protected $bufferHandler;
@@ -31,17 +28,52 @@ class ThrowableCollector {
     protected $catchableRepository;
 
     public function __construct(
-        ExceptionSerializer $serializer, LimitlessBufferHandler $bufferHandler, CatchableRepository $catchableRepository
+        LimitlessBufferHandler $bufferHandler, CatchableRepository $catchableRepository
     ) {
-        $this->serializer = $serializer;
         $this->bufferHandler = $bufferHandler;
         $this->catchableRepository = $catchableRepository;
     }
 
     public function collect(\Throwable $exception): Catchable {
-        $catchable = $this->serializer->createEntity($exception);
+        $catchable = $this->createEntity($exception);
         $catchable->setLogs($this->bufferHandler->getLogs());
         $this->catchableRepository->save($catchable);
+
+        return $catchable;
+    }
+
+    protected function createEntity(\Throwable $e): Catchable {
+        $catchable = $this->createEntityForFlatten(FlattenException::createFromThrowable($e));
+        $this->setStackTraceAsString($catchable, $e);
+
+        return $catchable;
+    }
+
+    private function setStackTraceAsString(Catchable $catchable, \Throwable $e): void {
+        do {
+            $catchable->setStackTraceString($e->getTraceAsString());
+            $catchable = $catchable->getPrevious();
+            $e = $e->getPrevious();
+        } while ($catchable && $e);
+    }
+
+    private function createEntityForFlatten(FlattenException $flatten): Catchable {
+        $catchable = new Catchable();
+        $catchable->setMessage($flatten->getMessage());
+        $catchable->setCode($flatten->getCode());
+        $catchable->setTrace($flatten->getTrace());
+        $catchable->setClass($flatten->getClass());
+        $catchable->setFile($flatten->getFile());
+        $catchable->setLine($flatten->getLine());
+
+        if ($previous = $flatten->getPrevious()) {
+            $previous = $this->createEntityForFlatten($previous);
+            $catchable->setPrevious($previous);
+            $previous->setNext($catchable);
+        }
+
+        $catchable->setStatusCode($flatten->getStatusCode());
+        $catchable->setHeaders($flatten->getHeaders());
 
         return $catchable;
     }
