@@ -31,8 +31,6 @@ class CatchableRepository extends EntityRepository {
     }
 
     /**
-     * @param string $class
-     *
      * @return Catchable[]
      */
     public function findByClass(string $class) {
@@ -84,10 +82,6 @@ class CatchableRepository extends EntityRepository {
     }
 
     /**
-     * @param CatchableFilter $filter
-     *
-     * @return int
-     *
      * @throws \Doctrine\ORM\NonUniqueResultException
      */
     public function countForFilter(CatchableFilter $filter): int {
@@ -120,8 +114,6 @@ class CatchableRepository extends EntityRepository {
     }
 
     /**
-     * @param Catchable $current
-     *
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      */
@@ -140,8 +132,6 @@ class CatchableRepository extends EntityRepository {
     }
 
     /**
-     * @param int $id
-     *
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      */
