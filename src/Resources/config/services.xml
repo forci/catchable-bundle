@@ -21,14 +21,14 @@
 
         <service id="Forci\Bundle\Catchable\Collector\ThrowableCollector">
             <argument type="service" id="forci.catchable.monolog.handler.log_buffer"/>
-            <argument type="service" id="forci.catchable.repo.catchable"/>
+            <argument type="service" id="Forci\Bundle\Catchable\Repository\CatchableRepository"/>
         </service>
 
         <service id="Forci\Bundle\Catchable\Controller\IndexController" public="true">
             <tag name="controller.service_arguments"/>
         </service>
         <service id="Forci\Bundle\Catchable\Controller\CatchableController" public="true">
-            <argument type="service" id="forci.catchable.repo.catchable"/>
+            <argument type="service" id="Forci\Bundle\Catchable\Repository\CatchableRepository"/>
             <argument type="service" id="Forci\Bundle\Catchable\Serializer\CatchableSerializer"/>
             <tag name="controller.service_arguments"/>
         </service>

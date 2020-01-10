@@ -1,15 +1,8 @@
 Register the bundle as usual and mount its routing. 
 
-In your config.yml
-
-```yaml
-forci_catchable:
-    entity_manager: default
-```
-
-Where `entity_manager` is your SEPARATE entity manager.
-
 For this bundle to make any sense at all, you need to create a separate connection and a separate entity manager.
+From version 0.7 and up, you no longer need any config for this bundle.
+Follow https://symfony.com/doc/4.4/doctrine/multiple_entity_managers.html and map `ForciCatchableBundle` to your separate EM.
 
 Better yet, create a completely separate database. Having a separate entity manager will also mean you will NOT be able to migrate this with `DoctrineMigrationsBundle` as it does NOT support multiple entity managers (at least to my knowledge). So create/update your separate database as per your project's deployment strategy and/or needs.
 
@@ -108,6 +101,15 @@ monolog:
 ```
 
 ## Versions <= ~0.5
+In your config.yml
+
+```yaml
+forci_catchable:
+    entity_manager: default
+```
+
+Where `entity_manager` is your SEPARATE entity manager.
+
 In your config_prod.yml
 
 ```yaml

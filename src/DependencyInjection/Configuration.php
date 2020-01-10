@@ -20,17 +20,6 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
 class Configuration implements ConfigurationInterface {
 
     public function getConfigTreeBuilder() {
-        $treeBuilder = new TreeBuilder('forci_catchable');
-        $rootNode = $treeBuilder->getRootNode();
-
-        $rootNode
-            ->children()
-                ->scalarNode('entity_manager')
-                    ->defaultValue('default')
-                    ->end()
-                ->end()
-            ->end();
-
-        return $treeBuilder;
+        return new TreeBuilder('forci_catchable');
     }
 }
