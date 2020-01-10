@@ -30,8 +30,6 @@ class ForciCatchableExtension extends Extension {
             new FileLocator(__DIR__.'/../Resources/config')
         );
 
-        $container->setParameter('forci.catchable.config.entity_manager', sprintf('doctrine.orm.%s_entity_manager', $config['entity_manager']));
-
         $loader->load('services.xml');
     }
 
