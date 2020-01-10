@@ -28,6 +28,13 @@ monolog:
             type:         fingers_crossed
             action_level: critical
             handler:      grouped
+            # 404 and 405 can build up tons if unnecessary data
+            # You may be better off tracking those from your web server's logs
+            excluded_http_codes: [404, 405]
+            # Alternatively, exclude just 404s at given paths
+#            excluded_404s:
+#                # regex: exclude all 404 errors from the logs
+#                - ^/
         grouped:
             type:    group
             members: [streamed, buffered, catchable]
