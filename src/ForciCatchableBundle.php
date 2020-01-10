@@ -14,7 +14,6 @@
 
 namespace Forci\Bundle\Catchable;
 
-use Forci\Bundle\Catchable\DependencyInjection\Compiler\SetEntityManagerPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
@@ -22,7 +21,5 @@ class ForciCatchableBundle extends Bundle {
 
     public function build(ContainerBuilder $container) {
         parent::build($container);
-
-        $container->addCompilerPass(new SetEntityManagerPass());
     }
 }

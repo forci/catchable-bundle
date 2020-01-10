@@ -14,11 +14,16 @@
 
 namespace Forci\Bundle\Catchable\Repository;
 
-use Doctrine\ORM\EntityRepository;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Persistence\ManagerRegistry;
 use Forci\Bundle\Catchable\Entity\Catchable;
 use Forci\Bundle\Catchable\Filter\CatchableFilter;
 
-class CatchableRepository extends EntityRepository {
+class CatchableRepository extends ServiceEntityRepository {
+
+    public function __construct(ManagerRegistry $registry) {
+        parent::__construct($registry, Catchable::class);
+    }
 
     public function findOneById(int $id): ?Catchable {
         $builder = $this->createQueryBuilder('c')

@@ -11,13 +11,7 @@
             <tag name="kernel.event_subscriber"/>
         </service>
 
-        <service id="forci.catchable.repo.abstract" abstract="true" public="true">
-            <factory service="forci.catchable.entity_manager" method="getRepository"/>
-        </service>
-
-        <service id="forci.catchable.repo.catchable" class="Forci\Bundle\Catchable\Repository\CatchableRepository" parent="forci.catchable.repo.abstract">
-            <argument>Forci\Bundle\Catchable\Entity\Catchable</argument>
-        </service>
+        <service id="Forci\Bundle\Catchable\Repository\CatchableRepository" autowire="true" autoconfigure="true"/>
 
         <service id="Forci\Bundle\Catchable\Serializer\CatchableSerializer" public="true">
             <argument type="service" id="debug.file_link_formatter" on-invalid="ignore" />
