@@ -4,6 +4,11 @@
 
     <services>
 
+        <prototype namespace="Forci\Bundle\Catchable\Controller\" resource="../../Controller"
+                   autowire="true" autoconfigure="true" public="true">
+            <tag name="controller.service_arguments"/>
+        </prototype>
+
         <service id="forci.catchable.monolog.handler.log_buffer" class="Forci\Bundle\Catchable\Monolog\Handler\LogBufferHandler"/>
 
         <service id="forci.catchable.subscriber.exception" class="Forci\Bundle\Catchable\Subscriber\ExceptionSubscriber">
@@ -22,15 +27,6 @@
         <service id="Forci\Bundle\Catchable\Collector\ThrowableCollector">
             <argument type="service" id="forci.catchable.monolog.handler.log_buffer"/>
             <argument type="service" id="Forci\Bundle\Catchable\Repository\CatchableRepository"/>
-        </service>
-
-        <service id="Forci\Bundle\Catchable\Controller\IndexController" public="true">
-            <tag name="controller.service_arguments"/>
-        </service>
-        <service id="Forci\Bundle\Catchable\Controller\CatchableController" public="true">
-            <argument type="service" id="Forci\Bundle\Catchable\Repository\CatchableRepository"/>
-            <argument type="service" id="Forci\Bundle\Catchable\Serializer\CatchableSerializer"/>
-            <tag name="controller.service_arguments"/>
         </service>
 
     </services>
