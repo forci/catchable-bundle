@@ -11,7 +11,7 @@
     },
     "dependencies": {
         "axios": "^0.17.0",
-        "bootstrap-vue": "^2.0.0-rc.2",
+        "bootstrap-vue": "^2.0.0-rc.12",
         "debounce": "^1.1.0",
         "element-ui": "^2.0.11",
         "node-sass": "^4.7.2",
