@@ -14,7 +14,7 @@
         "bootstrap-vue": "^2.0.0-rc.12",
         "debounce": "^1.1.0",
         "element-ui": "^2.0.11",
-        "node-sass": "^4.7.2",
+        "node-sass": "^4.13.1",
         "query-string": "^5.0.1",
         "sass-loader": "^6.0.7",
         "vee-validate": "^2.0.0-rc.19",
