@@ -14,6 +14,7 @@
 
 namespace Forci\Bundle\Catchable\Monolog\Handler;
 
+use Monolog\Formatter\FormatterInterface;
 use Monolog\Formatter\ScalarFormatter;
 use Monolog\Handler\AbstractHandler;
 use Monolog\Logger;
@@ -22,19 +23,20 @@ class LogBufferHandler extends AbstractHandler {
 
     /** @var [] */
     protected $buffer = [];
+    protected FormatterInterface $formatter;
 
     public function __construct($level = Logger::DEBUG, $bubble = true) {
         parent::__construct($level, $bubble);
-        $this->setFormatter(new ScalarFormatter());
+        $this->formatter = new ScalarFormatter();
     }
 
-    public function handle(array $record) {
-        $this->buffer[] = $this->getFormatter()->format($record);
+    public function handle(array $record): bool {
+        $this->buffer[] = $this->formatter->format($record);
 
         return false === $this->bubble;
     }
 
-    public function close() {
+    public function close(): void {
         $this->clear();
     }
 
