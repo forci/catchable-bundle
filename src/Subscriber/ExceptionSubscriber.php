@@ -28,13 +28,13 @@ class ExceptionSubscriber implements EventSubscriberInterface {
         $this->collector = $collector;
     }
 
-    public static function getSubscribedEvents() {
+    public static function getSubscribedEvents(): array {
         return [
             KernelEvents::EXCEPTION => 'exception'
         ];
     }
 
-    public function exception(ExceptionEvent $event) {
+    public function exception(ExceptionEvent $event): void {
         $this->collector->collect($event->getThrowable());
     }
 }
