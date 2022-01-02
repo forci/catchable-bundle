@@ -6,25 +6,25 @@ forci_catchable_root:
 
 forci_catchable_index:
     path:      /index
-    controller: Forci\Bundle\Catchable\Controller\IndexController:indexAction
+    controller: Forci\Bundle\Catchable\Controller\IndexController::indexAction
     methods:    [GET]
 
 forci_catchable_catchable_list:
     path:      /list
-    controller: Forci\Bundle\Catchable\Controller\CatchableController:listAction
+    controller: Forci\Bundle\Catchable\Controller\CatchableController::listAction
     methods:    [GET]
 
 forci_catchable_catchable_get:
     path:      /{id}/get
-    controller: Forci\Bundle\Catchable\Controller\CatchableController:getAction
+    controller: Forci\Bundle\Catchable\Controller\CatchableController::getAction
     methods:    [GET]
 
 forci_catchable_catchable_delete_all:
     path:      /all
-    controller: Forci\Bundle\Catchable\Controller\CatchableController:deleteAllAction
+    controller: Forci\Bundle\Catchable\Controller\CatchableController::deleteAllAction
     methods:    [DELETE]
 
 forci_catchable_catchable_delete:
     path:      /remove
-    controller: Forci\Bundle\Catchable\Controller\CatchableController:deleteAction
+    controller: Forci\Bundle\Catchable\Controller\CatchableController::deleteAction
     methods:    [DELETE]
