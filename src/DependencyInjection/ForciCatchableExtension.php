@@ -33,11 +33,11 @@ class ForciCatchableExtension extends Extension {
         $loader->load('services.xml');
     }
 
-    public function getConfiguration(array $config, ContainerBuilder $container) {
+    public function getConfiguration(array $config, ContainerBuilder $container): Configuration {
         return new Configuration();
     }
 
-    public function getNamespace() {
+    public function getNamespace(): string {
         return 'http://www.example.com/schema/';
     }
 
