@@ -21,20 +21,18 @@ use Symfony\Component\HttpKernel\KernelEvents;
 
 class ExceptionSubscriber implements EventSubscriberInterface {
 
-    /** @va.r ThrowableCollector */
-    protected $collector;
-
-    public function __construct(ThrowableCollector $collector) {
-        $this->collector = $collector;
+    public function __construct(private ThrowableCollector $collector) {
     }
 
-    public static function getSubscribedEvents() {
+    public static function getSubscribedEvents(): array
+    {
         return [
             KernelEvents::EXCEPTION => 'exception'
         ];
     }
 
-    public function exception(ExceptionEvent $event) {
+    public function exception(ExceptionEvent $event): void
+    {
         $this->collector->collect($event->getThrowable());
     }
 }
