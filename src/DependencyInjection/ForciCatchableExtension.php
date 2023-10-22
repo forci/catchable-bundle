@@ -21,7 +21,8 @@ use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 
 class ForciCatchableExtension extends Extension {
 
-    public function load(array $configs, ContainerBuilder $container) {
+    public function load(array $configs, ContainerBuilder $container): void
+    {
         $configuration = $this->getConfiguration($configs, $container);
         $config = $this->processConfiguration($configuration, $configs);
 
@@ -33,15 +34,18 @@ class ForciCatchableExtension extends Extension {
         $loader->load('services.xml');
     }
 
-    public function getConfiguration(array $config, ContainerBuilder $container) {
+    public function getConfiguration(array $config, ContainerBuilder $container): Configuration
+    {
         return new Configuration();
     }
 
-    public function getNamespace() {
+    public function getNamespace(): string
+    {
         return 'http://www.example.com/schema/';
     }
 
-    public function getXsdValidationBasePath() {
+    public function getXsdValidationBasePath(): bool
+    {
         return false;
     }
 }
