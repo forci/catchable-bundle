@@ -19,7 +19,7 @@
         "php": ">=8.0",
         "symfony/framework-bundle": "~5.0|~6.0|~7.0|~8.0",
         "symfony/form": "~5.0|~6.0|~7.0|~8.0",
-        "monolog/monolog": "^1.25.3|^2",
+        "monolog/monolog": "^1.25.3|^2|^3",
         "doctrine/doctrine-bundle": "~1.12|~2.0|~3.0",
         "doctrine/orm": "~2.6|~3.0"
     },
