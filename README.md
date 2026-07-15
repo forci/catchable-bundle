@@ -10,6 +10,34 @@ The above configuration uses the default one and WILL NOT WORK in case you have 
 
 WARNING: This bundle is NOT meant to be a replacement for your file or else logging. It is meant to work alongside your existing infrastructure and make viewing errors easier and nicer via your admin interface.
 
+## Purging old catchables (retention)
+
+The `catchables` table only grows — every caught throwable is persisted and nothing removes old rows, so on a busy app it will eventually fill the disk. The `forci:catchable:purge` command deletes catchables older than a retention window (against whichever entity manager maps the entity). Run it from cron.
+
+```bash
+# Delete catchables older than 30 days
+php bin/console forci:catchable:purge --days=30
+
+# See how many would be deleted, without deleting anything
+php bin/console forci:catchable:purge --days=30 --dry-run
+```
+
+Optionally set a default window so the scheduled command can run with no arguments:
+
+```yaml
+# config/packages/forci_catchable.yaml
+forci_catchable:
+    purge:
+        keep_for_days: 30
+```
+
+```bash
+# Uses the configured keep_for_days
+php bin/console forci:catchable:purge
+```
+
+`--days` overrides the configured default. If neither is set, the command deletes nothing and tells you to provide one.
+
 ## Versions >= ~0.6
 
 In your config_prod.yml

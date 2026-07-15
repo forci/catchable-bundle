@@ -21,6 +21,22 @@ class Configuration implements ConfigurationInterface {
 
     public function getConfigTreeBuilder(): TreeBuilder
     {
-        return new TreeBuilder('forci_catchable');
+        $treeBuilder = new TreeBuilder('forci_catchable');
+
+        $treeBuilder->getRootNode()
+            ->children()
+                ->arrayNode('purge')
+                    ->addDefaultsIfNotSet()
+                    ->children()
+                        ->integerNode('keep_for_days')
+                            ->defaultNull()
+                            ->min(1)
+                            ->info('Default retention window (in days) used by forci:catchable:purge when --days is omitted. Null means no default, so --days is required.')
+                        ->end()
+                    ->end()
+                ->end()
+            ->end();
+
+        return $treeBuilder;
     }
 }
