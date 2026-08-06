@@ -32,6 +32,8 @@ class ForciCatchableExtension extends Extension {
         );
 
         $loader->load('services.xml');
+
+        $container->setParameter('forci_catchable.purge.keep_for_days', $config['purge']['keep_for_days']);
     }
 
     public function getConfiguration(array $config, ContainerBuilder $container): Configuration

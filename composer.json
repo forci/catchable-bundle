@@ -25,10 +25,14 @@
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^2.8|^3.0",
-        "wucdbm/php-cs-fixers": "~0.3"
+        "wucdbm/php-cs-fixers": "~0.3",
+        "phpunit/phpunit": "^9.6|^10.5|^11.5|^12.0"
     },
     "autoload": {
         "psr-4": { "Forci\\Bundle\\Catchable\\": "src" }
+    },
+    "autoload-dev": {
+        "psr-4": { "Forci\\Bundle\\Catchable\\Tests\\": "tests" }
     },
     "config": {
         "bin-dir": "bin"

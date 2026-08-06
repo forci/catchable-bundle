@@ -167,4 +167,32 @@ class CatchableRepository extends ServiceEntityRepository {
     public function removeAll() {
         $this->getEntityManager()->createQueryBuilder()->delete(Catchable::class, 'c')->getQuery()->execute();
     }
+
+    public function countCreatedBefore(\DateTimeInterface $threshold): int {
+        $builder = $this->createQueryBuilder('c')
+            ->select('COUNT(c.id)')
+            ->andWhere('c.createdAt < :threshold')
+            ->setParameter('threshold', $threshold);
+
+        return (int) $builder->getQuery()->getSingleScalarResult();
+    }
+
+    /**
+     * Bulk-deletes catchables older than the threshold. The self-referencing
+     * previous/next FKs are ON DELETE CASCADE, so exception chains within the
+     * window are removed together at the database level.
+     *
+     * @return int number of rows deleted
+     */
+    public function removeCreatedBefore(\DateTimeInterface $threshold): int {
+        $em = $this->getEntityManager();
+
+        $dql = sprintf('DELETE FROM %s c WHERE c.createdAt < :threshold', Catchable::class);
+
+        $query = $em->createQuery($dql);
+
+        return (int) $query->execute([
+            'threshold' => $threshold
+        ]);
+    }
 }

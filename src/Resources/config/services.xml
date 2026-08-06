@@ -29,6 +29,12 @@
             <argument type="service" id="Forci\Bundle\Catchable\Repository\CatchableRepository"/>
         </service>
 
+        <service id="Forci\Bundle\Catchable\Command\PurgeCatchablesCommand">
+            <argument type="service" id="Forci\Bundle\Catchable\Repository\CatchableRepository"/>
+            <argument>%forci_catchable.purge.keep_for_days%</argument>
+            <tag name="console.command" command="forci:catchable:purge"/>
+        </service>
+
     </services>
 
 </container>
