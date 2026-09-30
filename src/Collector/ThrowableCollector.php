@@ -19,22 +19,18 @@ use Forci\Bundle\Catchable\Monolog\Handler\LogBufferHandler;
 use Forci\Bundle\Catchable\Repository\CatchableRepository;
 use Symfony\Component\ErrorHandler\Exception\FlattenException;
 
-class ThrowableCollector {
-
-    /** @var LogBufferHandler */
-    protected $bufferHandler;
-
-    /** @var CatchableRepository */
-    protected $catchableRepository;
+class ThrowableCollector
+{
 
     public function __construct(
-        LogBufferHandler $bufferHandler, CatchableRepository $catchableRepository
-    ) {
-        $this->bufferHandler = $bufferHandler;
-        $this->catchableRepository = $catchableRepository;
+        protected LogBufferHandler $bufferHandler,
+        protected CatchableRepository $catchableRepository
+    )
+    {
     }
 
-    public function collect(\Throwable $exception): Catchable {
+    public function collect(\Throwable $exception): Catchable
+    {
         $catchable = $this->createEntity($exception);
         $catchable->setLogs($this->bufferHandler->getLogs());
         $this->catchableRepository->save($catchable);
@@ -42,14 +38,16 @@ class ThrowableCollector {
         return $catchable;
     }
 
-    protected function createEntity(\Throwable $e): Catchable {
+    protected function createEntity(\Throwable $e): Catchable
+    {
         $catchable = $this->createEntityForFlatten(FlattenException::createFromThrowable($e));
         $this->setStackTraceAsString($catchable, $e);
 
         return $catchable;
     }
 
-    private function setStackTraceAsString(Catchable $catchable, \Throwable $e): void {
+    private function setStackTraceAsString(Catchable $catchable, \Throwable $e): void
+    {
         do {
             $catchable->setStackTraceString($e->getTraceAsString());
             $catchable = $catchable->getPrevious();
@@ -57,7 +55,8 @@ class ThrowableCollector {
         } while ($catchable && $e);
     }
 
-    private function createEntityForFlatten(FlattenException $flatten): Catchable {
+    private function createEntityForFlatten(FlattenException $flatten): Catchable
+    {
         $catchable = new Catchable();
         $catchable->setMessage($flatten->getMessage());
         $catchable->setCode($flatten->getCode());

@@ -27,13 +27,15 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  * The window comes from --days, falling back to the configured
  * forci_catchable.purge.keep_for_days. Meant to be run from cron.
  */
-class PurgeCatchablesCommand extends Command {
-
-    public function __construct(private CatchableRepository $repository, private ?int $defaultKeepForDays = null) {
+class PurgeCatchablesCommand extends Command
+{
+    public function __construct(private CatchableRepository $repository, private ?int $defaultKeepForDays = null)
+    {
         parent::__construct();
     }
 
-    protected function configure(): void {
+    protected function configure(): void
+    {
         $this
             ->setName('forci:catchable:purge')
             ->setDescription('Delete catchables older than a retention window to keep the table from growing unbounded.')
@@ -41,7 +43,8 @@ class PurgeCatchablesCommand extends Command {
             ->addOption('dry-run', null, InputOption::VALUE_NONE, 'Report how many catchables would be deleted, without deleting anything.');
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output): int {
+    protected function execute(InputInterface $input, OutputInterface $output): int
+    {
         $io = new SymfonyStyle($input, $output);
 
         $days = $input->getOption('days');

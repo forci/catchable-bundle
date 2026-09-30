@@ -17,8 +17,8 @@ namespace Forci\Bundle\Catchable;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
-class ForciCatchableBundle extends Bundle {
-
+class ForciCatchableBundle extends Bundle
+{
     public function build(ContainerBuilder $container): void
     {
         parent::build($container);

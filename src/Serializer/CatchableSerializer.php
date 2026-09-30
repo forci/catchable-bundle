@@ -17,8 +17,8 @@ namespace Forci\Bundle\Catchable\Serializer;
 use Forci\Bundle\Catchable\Entity\Catchable;
 use Symfony\Component\HttpFoundation\Response;
 
-class CatchableSerializer {
-
+class CatchableSerializer
+{
     protected $fileLinkFormat;
 
     /** @var string */
@@ -27,13 +27,15 @@ class CatchableSerializer {
     /** @var string */
     protected $projectDir;
 
-    public function __construct($fileLinkFormat, string $charset, string $projectDir) {
+    public function __construct($fileLinkFormat, string $charset, string $projectDir)
+    {
         $this->fileLinkFormat = $fileLinkFormat ?: ini_get('xdebug.file_link_format') ?: get_cfg_var('xdebug.file_link_format');
         $this->charset = $charset;
         $this->projectDir = rtrim($projectDir, DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR;
     }
 
-    public function serialize(Catchable $catchable): array {
+    public function serialize(Catchable $catchable): array
+    {
         $trace = $catchable->getTrace();
 
         foreach ($trace as $key => $t) {
@@ -63,7 +65,7 @@ class CatchableSerializer {
             'createdAt' => $catchable->getCreatedAt()->getTimestamp(),
             'headers' => $catchable->getHeaders(),
             'statusCode' => $statusCode,
-            'statusCodeText' => $statusCodeText
+            'statusCodeText' => $statusCodeText,
         ];
 
         if ($catchable->getPrevious()) {
@@ -82,7 +84,8 @@ class CatchableSerializer {
         return $dataArray;
     }
 
-    protected function formatArgs($args) {
+    protected function formatArgs($args)
+    {
         $result = [];
         foreach ($args as $key => $item) {
             if ('object' === $item[0]) {
@@ -116,7 +119,8 @@ class CatchableSerializer {
      *
      * @return string
      */
-    protected function formatFile($file, $line, $text = null) {
+    protected function formatFile($file, $line, $text = null)
+    {
         $file = trim($file);
 
         if (null === $text) {
@@ -159,7 +163,8 @@ class CatchableSerializer {
      *
      * @return string|false A link or false
      */
-    public function getFileLink($file, $line) {
+    public function getFileLink($file, $line)
+    {
         if ($fmt = $this->fileLinkFormat) {
             return is_string($fmt) ? strtr($fmt, ['%f' => $file, '%l' => $line]) : $fmt->format($file, $line);
         }

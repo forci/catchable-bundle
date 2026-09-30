@@ -14,24 +14,26 @@ COMMENT;
 
 $finder = PhpCsFixer\Finder::create()->in(__DIR__ . '/src');
 
-return PhpCsFixer\Config::create()
-    ->registerCustomFixers([
-        new \Wucdbm\PhpCsFixer\Fixer\EnsureBlankLineAfterClassOpeningFixer()
-    ])
+
+// https://cs.symfony.com/
+$config = (new \PhpCsFixer\Config());
+
+$config
     ->setRules([
-        '@Symfony'                                     => true,
-        'no_blank_lines_after_class_opening'           => false,
-        'Wucdbm/ensure_blank_line_after_class_opening' => true,
-        'array_syntax'                                 => [
+        '@Symfony' => true,
+        'no_blank_lines_after_class_opening' => false,
+        'array_syntax' => [
             'syntax' => 'short'
         ],
-        'braces'                                       => [
+        'braces' => [
             'position_after_functions_and_oop_constructs' => 'same'
         ],
-        'trailing_comma_in_multiline_array'            => false,
-        'header_comment'                               => [
+        'trailing_comma_in_multiline' => false,
+        'header_comment' => [
             'header' => $headerComment
         ]
     ])
     ->setUsingCache(false)
     ->setFinder($finder);
+
+return $config;

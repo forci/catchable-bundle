@@ -19,13 +19,15 @@ use Doctrine\Persistence\ManagerRegistry;
 use Forci\Bundle\Catchable\Entity\Catchable;
 use Forci\Bundle\Catchable\Filter\CatchableFilter;
 
-class CatchableRepository extends ServiceEntityRepository {
-
-    public function __construct(ManagerRegistry $registry) {
+class CatchableRepository extends ServiceEntityRepository
+{
+    public function __construct(ManagerRegistry $registry)
+    {
         parent::__construct($registry, Catchable::class);
     }
 
-    public function findOneById(int $id): ?Catchable {
+    public function findOneById(int $id): ?Catchable
+    {
         $builder = $this->createQueryBuilder('c')
             ->addSelect('c')
             ->andWhere('c.id = :id')
@@ -38,7 +40,8 @@ class CatchableRepository extends ServiceEntityRepository {
     /**
      * @return Catchable[]
      */
-    public function findByClass(string $class) {
+    public function findByClass(string $class)
+    {
         $builder = $this->createQueryBuilder('c')
             ->addSelect('c')
             ->andWhere('c.class = :class')
@@ -49,7 +52,8 @@ class CatchableRepository extends ServiceEntityRepository {
         return $query->getResult();
     }
 
-    public function filter(CatchableFilter $filter): array {
+    public function filter(CatchableFilter $filter): array
+    {
         $subBuilder = $this->createQueryBuilder('sc');
         $builder = $this->createQueryBuilder('c');
 
@@ -89,7 +93,8 @@ class CatchableRepository extends ServiceEntityRepository {
     /**
      * @throws \Doctrine\ORM\NonUniqueResultException
      */
-    public function countForFilter(CatchableFilter $filter): int {
+    public function countForFilter(CatchableFilter $filter): int
+    {
         $subBuilder = $this->createQueryBuilder('sc');
         $builder = $this->createQueryBuilder('c');
 
@@ -122,7 +127,8 @@ class CatchableRepository extends ServiceEntityRepository {
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      */
-    public function save(Catchable $current) {
+    public function save(Catchable $current)
+    {
         $em = $this->getEntityManager();
 
         $em->persist($current);
@@ -140,7 +146,8 @@ class CatchableRepository extends ServiceEntityRepository {
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      */
-    public function removeById(int $id) {
+    public function removeById(int $id)
+    {
         $em = $this->getEntityManager();
 
         $dql = sprintf('DELETE FROM %s c WHERE c.id = :id', Catchable::class);
@@ -148,11 +155,12 @@ class CatchableRepository extends ServiceEntityRepository {
         $query = $em->createQuery($dql);
 
         $query->execute([
-            'id' => $id
+            'id' => $id,
         ]);
     }
 
-    public function removeByClass(string $class) {
+    public function removeByClass(string $class)
+    {
         $em = $this->getEntityManager();
 
         $dql = sprintf('DELETE FROM %s c WHERE c.class = :class', Catchable::class);
@@ -160,15 +168,17 @@ class CatchableRepository extends ServiceEntityRepository {
         $query = $em->createQuery($dql);
 
         $query->execute([
-            'class' => $class
+            'class' => $class,
         ]);
     }
 
-    public function removeAll() {
+    public function removeAll()
+    {
         $this->getEntityManager()->createQueryBuilder()->delete(Catchable::class, 'c')->getQuery()->execute();
     }
 
-    public function countCreatedBefore(\DateTimeInterface $threshold): int {
+    public function countCreatedBefore(\DateTimeInterface $threshold): int
+    {
         $builder = $this->createQueryBuilder('c')
             ->select('COUNT(c.id)')
             ->andWhere('c.createdAt < :threshold')
@@ -184,7 +194,8 @@ class CatchableRepository extends ServiceEntityRepository {
      *
      * @return int number of rows deleted
      */
-    public function removeCreatedBefore(\DateTimeInterface $threshold): int {
+    public function removeCreatedBefore(\DateTimeInterface $threshold): int
+    {
         $em = $this->getEntityManager();
 
         $dql = sprintf('DELETE FROM %s c WHERE c.createdAt < :threshold', Catchable::class);
@@ -192,7 +203,7 @@ class CatchableRepository extends ServiceEntityRepository {
         $query = $em->createQuery($dql);
 
         return (int) $query->execute([
-            'threshold' => $threshold
+            'threshold' => $threshold,
         ]);
     }
 }

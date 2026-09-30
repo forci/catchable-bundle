@@ -16,41 +16,47 @@ namespace Forci\Bundle\Catchable\Handler;
 
 use Monolog\Formatter\ScalarFormatter;
 use Monolog\Handler\AbstractHandler;
-use Monolog\Logger;
+use Monolog\Level;
+use Monolog\LogRecord;
 use Monolog\Processor\ProcessorInterface;
 
-class LimitlessBufferHandler extends AbstractHandler {
-
+class LimitlessBufferHandler extends AbstractHandler
+{
     /** @var [] */
     protected $buffer = [];
 
-    public function __construct($level = Logger::DEBUG, $bubble = true) {
+    private ScalarFormatter $formatter;
+
+    public function __construct($level = Level::Debug, $bubble = true)
+    {
         parent::__construct($level, $bubble);
-        $this->setFormatter(new ScalarFormatter());
+        $this->formatter = new ScalarFormatter();
     }
 
-    public function handle(array $record) {
-        if ($this->processors) {
-            /** @var ProcessorInterface $processor */
-            foreach ($this->processors as $processor) {
-                $record = $processor($record);
-            }
+    public function handle(LogRecord $record): bool
+    {
+
+        if (!$this->isHandling($record)) {
+            return false;
         }
 
-        $this->buffer[] = $this->getFormatter()->format($record);
+        $this->buffer[] = $this->formatter->format($record);
 
         return false === $this->bubble;
     }
 
-    public function close() {
+    public function close(): void
+    {
         $this->clear();
     }
 
-    public function clear() {
+    public function clear(): void
+    {
         $this->buffer = [];
     }
 
-    public function getLogs() {
+    public function getLogs()
+    {
         return $this->buffer;
     }
 }

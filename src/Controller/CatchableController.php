@@ -20,24 +20,19 @@ use Forci\Bundle\Catchable\Form\CatchableFilterType;
 use Forci\Bundle\Catchable\Repository\CatchableRepository;
 use Forci\Bundle\Catchable\Serializer\CatchableSerializer;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
-class CatchableController extends AbstractController {
-
-    /** @var CatchableRepository */
-    private $repository;
-
-    /** @var CatchableSerializer */
-    private $serializer;
-
+class CatchableController extends AbstractController
+{
     public function __construct(
-        CatchableRepository $repository, CatchableSerializer $serializer
+        private CatchableRepository $repository,
+        private CatchableSerializer $serializer
     ) {
-        $this->repository = $repository;
-        $this->serializer = $serializer;
     }
 
-    public function listAction(Request $request) {
+    public function listAction(Request $request): JsonResponse
+    {
         try {
             $filter = new CatchableFilter();
             $filterForm = $this->createForm(CatchableFilterType::class, $filter);
@@ -54,38 +49,40 @@ class CatchableController extends AbstractController {
                 'entities' => $formatted,
                 'total' => $this->repository->countForFilter($filter),
                 'page' => $filter->getPage(),
-                'limit' => $filter->getLimit()
+                'limit' => $filter->getLimit(),
             ];
         } catch (\Throwable $e) {
             $data = [
                 'success' => false,
-                'message' => $e->getMessage()
+                'message' => $e->getMessage(),
             ];
         }
 
         return $this->json($data);
     }
 
-    public function getAction(int $id) {
+    public function getAction(int $id): JsonResponse
+    {
         try {
             /** @var Catchable $entity */
             $entity = $this->repository->findOneById($id);
 
             $data = [
                 'success' => true,
-                'entity' => $entity ? $this->serializer->serialize($entity) : null
+                'entity' => $entity ? $this->serializer->serialize($entity) : null,
             ];
         } catch (\Throwable $e) {
             $data = [
                 'success' => false,
-                'message' => $e->getMessage()
+                'message' => $e->getMessage(),
             ];
         }
 
         return $this->json($data);
     }
 
-    public function deleteAction(Request $request) {
+    public function deleteAction(Request $request): JsonResponse
+    {
         try {
             if ($id = $request->query->get('id')) {
                 $this->repository->removeById($id);
@@ -96,19 +93,20 @@ class CatchableController extends AbstractController {
             }
 
             return $this->json([
-                'success' => true
+                'success' => true,
             ]);
         } catch (\Throwable $e) {
             return $this->json([
                 'success' => false,
-                'message' => $e->getMessage()
+                'message' => $e->getMessage(),
             ]);
         }
     }
 
-    public function deleteAllAction() {
+    public function deleteAllAction(): JsonResponse
+    {
         $data = [
-            'success' => true
+            'success' => true,
         ];
 
         try {
@@ -116,7 +114,7 @@ class CatchableController extends AbstractController {
         } catch (\Throwable $e) {
             $data = [
                 'success' => false,
-                'message' => $e->getMessage()
+                'message' => $e->getMessage(),
             ];
         }
 

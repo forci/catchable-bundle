@@ -1,40 +1,40 @@
-<container xmlns="http://symfony.com/schema/dic/services"
-           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+<!--<container xmlns="http://symfony.com/schema/dic/services"-->
+<!--           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"-->
+<!--           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">-->
 
-    <services>
+<!--    <services>-->
 
-        <prototype namespace="Forci\Bundle\Catchable\Controller\" resource="../../Controller"
-                   autowire="true" autoconfigure="true" public="true">
-            <tag name="controller.service_arguments"/>
-        </prototype>
+<!--        <prototype namespace="Forci\Bundle\Catchable\Controller\" resource="../../Controller"-->
+<!--                   autowire="true" autoconfigure="true" public="true">-->
+<!--            <tag name="controller.service_arguments"/>-->
+<!--        </prototype>-->
 
-        <service id="forci.catchable.monolog.handler.log_buffer" class="Forci\Bundle\Catchable\Monolog\Handler\LogBufferHandler"/>
+<!--        <service id="forci.catchable.monolog.handler.log_buffer" class="Forci\Bundle\Catchable\Monolog\Handler\LogBufferHandler"/>-->
 
-        <service id="forci.catchable.subscriber.exception" class="Forci\Bundle\Catchable\Subscriber\ExceptionSubscriber">
-            <argument type="service" id="Forci\Bundle\Catchable\Collector\ThrowableCollector"/>
-            <tag name="kernel.event_subscriber"/>
-        </service>
+<!--        <service id="forci.catchable.subscriber.exception" class="Forci\Bundle\Catchable\Subscriber\ExceptionSubscriber">-->
+<!--            <argument type="service" id="Forci\Bundle\Catchable\Collector\ThrowableCollector"/>-->
+<!--            <tag name="kernel.event_subscriber"/>-->
+<!--        </service>-->
 
-        <service id="Forci\Bundle\Catchable\Repository\CatchableRepository" autowire="true" autoconfigure="true"/>
+<!--        <service id="Forci\Bundle\Catchable\Repository\CatchableRepository" autowire="true" autoconfigure="true"/>-->
 
-        <service id="Forci\Bundle\Catchable\Serializer\CatchableSerializer" public="true">
-            <argument type="service" id="debug.file_link_formatter" on-invalid="ignore" />
-            <argument>%kernel.charset%</argument>
-            <argument>%kernel.project_dir%</argument>
-        </service>
+<!--        <service id="Forci\Bundle\Catchable\Serializer\CatchableSerializer" public="true">-->
+<!--            <argument type="service" id="debug.file_link_formatter" on-invalid="ignore" />-->
+<!--            <argument>%kernel.charset%</argument>-->
+<!--            <argument>%kernel.project_dir%</argument>-->
+<!--        </service>-->
 
-        <service id="Forci\Bundle\Catchable\Collector\ThrowableCollector">
-            <argument type="service" id="forci.catchable.monolog.handler.log_buffer"/>
-            <argument type="service" id="Forci\Bundle\Catchable\Repository\CatchableRepository"/>
-        </service>
+<!--        <service id="Forci\Bundle\Catchable\Collector\ThrowableCollector">-->
+<!--            <argument type="service" id="forci.catchable.monolog.handler.log_buffer"/>-->
+<!--            <argument type="service" id="Forci\Bundle\Catchable\Repository\CatchableRepository"/>-->
+<!--        </service>-->
 
-        <service id="Forci\Bundle\Catchable\Command\PurgeCatchablesCommand">
-            <argument type="service" id="Forci\Bundle\Catchable\Repository\CatchableRepository"/>
-            <argument>%forci_catchable.purge.keep_for_days%</argument>
-            <tag name="console.command" command="forci:catchable:purge"/>
-        </service>
+<!--        <service id="Forci\Bundle\Catchable\Command\PurgeCatchablesCommand">-->
+<!--            <argument type="service" id="Forci\Bundle\Catchable\Repository\CatchableRepository"/>-->
+<!--            <argument>%forci_catchable.purge.keep_for_days%</argument>-->
+<!--            <tag name="console.command" command="forci:catchable:purge"/>-->
+<!--        </service>-->
 
-    </services>
+<!--    </services>-->
 
-</container>
+<!--</container>-->

@@ -15,347 +15,218 @@
 namespace Forci\Bundle\Catchable\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Forci\Bundle\Catchable\Repository\CatchableRepository;
 
-/**
- * @ORM\Entity(repositoryClass="Forci\Bundle\Catchable\Repository\CatchableRepository")
- * @ORM\Table(name="forci_catchable__catchables", options={"collate"="utf8mb4_unicode_ci", "charset"="utf8mb4"}, indexes={
- *     @ORM\Index(name="class", columns={"class"})
- * })
- */
-class Catchable {
+#[ORM\Entity(repositoryClass: CatchableRepository::class)]
+#[ORM\Table(name: 'forci_catchable__catchables', options: ['collate' => 'utf8mb4_unicode_ci', 'charset' => 'utf8mb4'])]
+#[ORM\Index(name: 'class', columns: ['class'])]
+class Catchable
+{
+    #[ORM\Id]
+    #[ORM\Column(name: 'id', type: 'integer', options: ['unsigned' => true])]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
+    protected ?int $id = null;
 
-    /**
-     * @ORM\Id
-     * @ORM\Column(name="id", type="integer", options={"unsigned"=true})
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    protected $id;
+    #[ORM\Column(name: 'message', type: 'text')]
+    protected string $message;
 
-    /**
-     * @ORM\Column(name="message", type="text")
-     */
-    protected $message;
+    #[ORM\Column(name: 'code', type: 'string')]
+    protected string $code;
 
-    /**
-     * @ORM\Column(name="code", type="string")
-     */
-    protected $code;
+    #[ORM\OneToOne(targetEntity: Catchable::class, fetch: 'EAGER')]
+    #[ORM\JoinColumn(name: 'previous_id', referencedColumnName: 'id', nullable: true, onDelete: 'CASCADE')]
+    protected ?Catchable $previous = null;
 
-    /**
-     * @var Catchable
-     * @ORM\OneToOne(targetEntity="Forci\Bundle\Catchable\Entity\Catchable", fetch="EAGER")
-     * @ORM\JoinColumn(name="previous_id", referencedColumnName="id", nullable=true, onDelete="CASCADE")
-     */
-    protected $previous;
+    #[ORM\OneToOne(targetEntity: Catchable::class, fetch: 'EAGER')]
+    #[ORM\JoinColumn(name: 'next_id', referencedColumnName: 'id', nullable: true, onDelete: 'CASCADE')]
+    protected ?Catchable $next = null;
 
-    /**
-     * @var Catchable
-     * @ORM\OneToOne(targetEntity="Forci\Bundle\Catchable\Entity\Catchable", fetch="EAGER")
-     * @ORM\JoinColumn(name="next_id", referencedColumnName="id", nullable=true, onDelete="CASCADE")
-     */
-    protected $next;
+    #[ORM\Column(name: 'trace', type: 'array')]
+    protected array $trace;
 
-    /**
-     * @ORM\Column(name="trace", type="array")
-     */
-    protected $trace;
+    #[ORM\Column(name: 'class', type: 'string')]
+    protected string $class;
 
-    /**
-     * @ORM\Column(name="class", type="string")
-     */
-    protected $class;
+    #[ORM\Column(name: 'status_code', type: 'string')]
+    protected string $statusCode;
 
-    /**
-     * @ORM\Column(name="status_code", type="string")
-     */
-    protected $statusCode;
+    #[ORM\Column(name: 'headers', type: 'array')]
+    protected array $headers;
 
-    /**
-     * @ORM\Column(name="headers", type="array")
-     */
-    protected $headers;
+    #[ORM\Column(name: 'file', type: 'text')]
+    protected string $file;
 
-    /**
-     * @ORM\Column(name="file", type="text")
-     */
-    protected $file;
+    #[ORM\Column(name: 'line', type: 'integer', options: ['unsigned' => true])]
+    protected int $line;
 
-    /**
-     * @ORM\Column(name="line", type="integer", options={"unsigned"=true})
-     */
-    protected $line;
+    #[ORM\Column(name: 'stack_trace_string', type: 'text')]
+    protected string $stackTraceString;
 
-    /**
-     * @ORM\Column(name="stack_trace_string", type="text")
-     */
-    protected $stackTraceString;
+    #[ORM\Column(name: 'created_at', type: 'datetime')]
+    private \DateTime $createdAt;
 
-    /**
-     * @ORM\Column(name="created_at", type="datetime")
-     */
-    private $createdAt;
+    #[ORM\Column(name: 'logs', type: 'array', nullable: true)]
+    protected ?array $logs = null;
 
-    /**
-     * @ORM\Column(name="logs", type="array", nullable=true)
-     */
-    protected $logs;
-
-    public function getPrevious(): ?Catchable {
+    public function getPrevious(): ?Catchable
+    {
         return $this->previous;
     }
 
-    public function setPrevious(?Catchable $previous) {
+    public function setPrevious(?Catchable $previous): static
+    {
         $this->previous = $previous;
 
         return $this;
     }
 
-    public function getNext(): ?Catchable {
+    public function getNext(): ?Catchable
+    {
         return $this->next;
     }
 
-    public function setNext(?Catchable $next) {
+    public function setNext(?Catchable $next): static
+    {
         $this->next = $next;
 
         return $this;
     }
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->createdAt = new \DateTime();
     }
 
-    /**
-     * Get id.
-     *
-     * @return int
-     */
-    public function getId() {
+    public function getId(): ?int
+    {
         return $this->id;
     }
 
-    /**
-     * Set message.
-     *
-     * @param string $message
-     *
-     * @return Catchable
-     */
-    public function setMessage($message) {
+    public function getMessage(): string
+    {
+        return $this->message;
+    }
+
+    public function setMessage(string $message): static
+    {
         $this->message = $message;
 
         return $this;
     }
 
-    /**
-     * Get message.
-     *
-     * @return string
-     */
-    public function getMessage() {
-        return $this->message;
+    public function getCode(): string
+    {
+        return $this->code;
     }
 
-    /**
-     * Set code.
-     *
-     * @param string $code
-     *
-     * @return Catchable
-     */
-    public function setCode($code) {
+    public function setCode(string $code): static
+    {
         $this->code = $code;
 
         return $this;
     }
 
-    /**
-     * Get code.
-     *
-     * @return string
-     */
-    public function getCode() {
-        return $this->code;
+    public function getClass(): string
+    {
+        return $this->class;
     }
 
-    /**
-     * Set class.
-     *
-     * @param string $class
-     *
-     * @return Catchable
-     */
-    public function setClass($class) {
+    public function setClass(string $class): static
+    {
         $this->class = $class;
 
         return $this;
     }
 
-    /**
-     * Get class.
-     *
-     * @return string
-     */
-    public function getClass() {
-        return $this->class;
+    public function getFile(): string
+    {
+        return $this->file;
     }
 
-    /**
-     * Set file.
-     *
-     * @param string $file
-     *
-     * @return Catchable
-     */
-    public function setFile($file) {
+    public function setFile(string $file): static
+    {
         $this->file = $file;
 
         return $this;
     }
 
-    /**
-     * Get file.
-     *
-     * @return string
-     */
-    public function getFile() {
-        return $this->file;
+    public function getLine(): int
+    {
+        return $this->line;
     }
 
-    /**
-     * Set line.
-     *
-     * @param int $line
-     *
-     * @return Catchable
-     */
-    public function setLine($line) {
+    public function setLine(int $line): static
+    {
         $this->line = $line;
 
         return $this;
     }
 
-    /**
-     * Get line.
-     *
-     * @return int
-     */
-    public function getLine() {
-        return $this->line;
+    public function getStackTraceString(): string
+    {
+        return $this->stackTraceString;
     }
 
-    /**
-     * Set stackTraceString.
-     *
-     * @param string $stackTraceString
-     *
-     * @return Catchable
-     */
-    public function setStackTraceString($stackTraceString) {
+    public function setStackTraceString(string $stackTraceString): static
+    {
         $this->stackTraceString = $stackTraceString;
 
         return $this;
     }
 
-    /**
-     * Get stackTraceString.
-     *
-     * @return string
-     */
-    public function getStackTraceString() {
-        return $this->stackTraceString;
+    public function getTrace(): array
+    {
+        return $this->trace;
     }
 
-    /**
-     * Set trace.
-     *
-     * @param array $trace
-     *
-     * @return Catchable
-     */
-    public function setTrace($trace) {
+    public function setTrace(array $trace): static
+    {
         $this->trace = $trace;
 
         return $this;
     }
 
-    /**
-     * Get trace.
-     *
-     * @return array
-     */
-    public function getTrace() {
-        return $this->trace;
+    public function getCreatedAt(): \DateTime
+    {
+        return $this->createdAt;
     }
 
-    /**
-     * Set createdAt.
-     *
-     * @param \DateTime $createdAt
-     *
-     * @return Catchable
-     */
-    public function setCreatedAt($createdAt) {
+    public function setCreatedAt(\DateTime $createdAt): static
+    {
         $this->createdAt = $createdAt;
 
         return $this;
     }
 
-    /**
-     * Get createdAt.
-     *
-     * @return \DateTime
-     */
-    public function getCreatedAt() {
-        return $this->createdAt;
+    public function getLogs(): ?array
+    {
+        return $this->logs;
     }
 
-    /**
-     * Set logs.
-     *
-     * @param array|null $logs
-     *
-     * @return Catchable
-     */
-    public function setLogs($logs = null) {
+    public function setLogs(?array $logs = null): static
+    {
         $this->logs = $logs;
 
         return $this;
     }
 
-    /**
-     * Get logs.
-     *
-     * @return array|null
-     */
-    public function getLogs() {
-        return $this->logs;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getStatusCode() {
+    public function getStatusCode(): string
+    {
         return $this->statusCode;
     }
 
-    /**
-     * @param mixed $statusCode
-     */
-    public function setStatusCode($statusCode): void {
+    public function setStatusCode(string $statusCode): void
+    {
         $this->statusCode = $statusCode;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getHeaders() {
+    public function getHeaders(): array
+    {
         return $this->headers;
     }
 
-    /**
-     * @param mixed $headers
-     */
-    public function setHeaders($headers): void {
+    public function setHeaders(array $headers): void
+    {
         $this->headers = $headers;
     }
 }

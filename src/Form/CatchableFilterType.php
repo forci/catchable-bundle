@@ -20,31 +20,33 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class CatchableFilterType extends AbstractType {
-
-    public function buildForm(FormBuilderInterface $builder, array $options) {
+class CatchableFilterType extends AbstractType
+{
+    public function buildForm(FormBuilderInterface $builder, array $options): void
+    {
         $builder
             ->add('message', TextType::class, [
                 'attr' => [
-                    'placeholder' => 'Message'
-                ]
+                    'placeholder' => 'Message',
+                ],
             ])
             ->add('file', TextType::class, [
                 'attr' => [
-                    'placeholder' => 'File'
-                ]
+                    'placeholder' => 'File',
+                ],
             ])
             ->add('class', TextType::class, [
                 'attr' => [
-                    'placeholder' => 'Class'
-                ]
+                    'placeholder' => 'Class',
+                ],
             ]);
     }
 
-    public function configureOptions(OptionsResolver $resolver) {
+    public function configureOptions(OptionsResolver $resolver): void
+    {
         $resolver->setDefaults([
             'data_class' => CatchableFilter::class,
-            'method' => 'GET'
+            'method' => 'GET',
         ]);
     }
 }

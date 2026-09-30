@@ -17,79 +17,75 @@ namespace Forci\Bundle\Catchable\Filter;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 
-class CatchableFilter {
+class CatchableFilter
+{
+    private ?\ReflectionClass $reflection = null;
 
-    private $reflection = null;
+    protected int $page = 1;
 
-    protected $page = 1;
+    protected int $limit = 20;
 
-    protected $limit = 20;
+    protected ?string $message = null;
 
-    /** @var string|null */
-    protected $message;
+    protected ?string $file = null;
 
-    /** @var string|null */
-    protected $file;
+    protected ?string $class = null;
 
-    /** @var string|null */
-    protected $class;
-
-    public function getMessage(): ?string {
+    public function getMessage(): ?string
+    {
         return $this->message;
     }
 
     /**
      * @param string|null $message
      */
-    public function setMessage($message) {
+    public function setMessage($message): void
+    {
         $this->message = $message;
     }
 
-    public function getFile(): ?string {
+    public function getFile(): ?string
+    {
         return $this->file;
     }
 
-    /**
-     * @param string|null $file
-     */
-    public function setFile($file): void {
+    public function setFile(?string $file): void
+    {
         $this->file = $file;
     }
 
-    public function getClass(): ?string {
+    public function getClass(): ?string
+    {
         return $this->class;
     }
 
-    /**
-     * @param string|null $class
-     */
-    public function setClass($class): void {
+    public function setClass(?string $class): void
+    {
         $this->class = $class;
     }
 
-    public function getPage(): int {
+    public function getPage(): int
+    {
         return $this->page;
     }
 
-    /**
-     * @param int|null $page
-     */
-    public function setPage($page): void {
+    public function setPage(?int $page): void
+    {
         $this->page = $page;
     }
 
-    public function getLimit(): int {
+    public function getLimit(): int
+    {
         return $this->limit;
     }
 
-    /**
-     * @param int|null $limit
-     */
-    public function setLimit($limit): void {
+    public function setLimit(?int $limit): void
+    {
         $this->limit = $limit;
     }
 
-    public function loadFromRequest(Request $request, FormInterface $form) {
+    public function loadFromRequest(Request $request, FormInterface $form): void
+    {
         $bag = 'POST' === $form->getConfig()->getMethod() ? $request->request : $request->query;
         $params = $bag->all();
 
@@ -104,7 +100,8 @@ class CatchableFilter {
         $form->handleRequest($request);
     }
 
-    protected function getProtectedVars() {
+    protected function getProtectedVars(): array
+    {
         $reflection = $this->getReflection();
         $vars = $reflection->getProperties(\ReflectionProperty::IS_PROTECTED);
         $ret = [];
@@ -115,12 +112,10 @@ class CatchableFilter {
         return $ret;
     }
 
-    protected function getReflection() {
+    protected function getReflection(): \ReflectionClass
+    {
         if (null === $this->reflection) {
-            try {
-                $this->reflection = new \ReflectionClass($this);
-            } catch (\ReflectionException $e) {
-            }
+            $this->reflection = new \ReflectionClass($this);
         }
 
         return $this->reflection;

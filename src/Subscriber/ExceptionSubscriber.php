@@ -19,15 +19,16 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
-class ExceptionSubscriber implements EventSubscriberInterface {
-
-    public function __construct(private ThrowableCollector $collector) {
+class ExceptionSubscriber implements EventSubscriberInterface
+{
+    public function __construct(private ThrowableCollector $collector)
+    {
     }
 
     public static function getSubscribedEvents(): array
     {
         return [
-            KernelEvents::EXCEPTION => 'exception'
+            KernelEvents::EXCEPTION => 'exception',
         ];
     }
 

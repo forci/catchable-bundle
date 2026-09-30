@@ -15,10 +15,12 @@
 namespace Forci\Bundle\Catchable\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Response;
 
-class IndexController extends AbstractController {
-
-    public function indexAction() {
+class IndexController extends AbstractController
+{
+    public function indexAction(): Response
+    {
         return $this->render('@ForciCatchable/Index/index.html.twig');
     }
 }
