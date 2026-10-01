@@ -14,6 +14,7 @@
 
 namespace Forci\Bundle\Catchable\Entity;
 
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Forci\Bundle\Catchable\Repository\CatchableRepository;
 
@@ -41,7 +42,7 @@ class Catchable
     #[ORM\JoinColumn(name: 'next_id', referencedColumnName: 'id', nullable: true, onDelete: 'CASCADE')]
     protected ?Catchable $next = null;
 
-    #[ORM\Column(name: 'trace', type: 'array')]
+    #[ORM\Column(name: 'trace', type: 'json')]
     protected array $trace;
 
     #[ORM\Column(name: 'class', type: 'string')]
@@ -50,7 +51,7 @@ class Catchable
     #[ORM\Column(name: 'status_code', type: 'string')]
     protected string $statusCode;
 
-    #[ORM\Column(name: 'headers', type: 'array')]
+    #[ORM\Column(name: 'headers', type: 'json')]
     protected array $headers;
 
     #[ORM\Column(name: 'file', type: 'text')]
@@ -65,7 +66,7 @@ class Catchable
     #[ORM\Column(name: 'created_at', type: 'datetime')]
     private \DateTime $createdAt;
 
-    #[ORM\Column(name: 'logs', type: 'array', nullable: true)]
+    #[ORM\Column(name: 'logs', type: 'json', nullable: true)]
     protected ?array $logs = null;
 
     public function getPrevious(): ?Catchable
